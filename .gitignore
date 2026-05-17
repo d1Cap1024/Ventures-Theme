@@ -1,0 +1,17 @@
+# Build artifacts kept in repo for vault installs:
+#   theme.css and manifest.json must ship.
+
+# Sass / Node
+node_modules/
+.sass-cache/
+*.css.map
+package-lock.json
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
