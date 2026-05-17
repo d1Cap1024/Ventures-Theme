@@ -1273,11 +1273,25 @@ body {
    other workspace partials so the translucent
    bg overrides their opaque baselines.
    ============================================ */
-/* --- Tunables (defaults; overridden by intensity variants) --- */
+/* --- Tunables ---
+   Two user-facing knobs (set by Style Settings sliders):
+     --ventures-glass-transparency  (0 = solid, 100 = invisible tint)
+     --ventures-glass-thickness     (CSS length: 0px..60px)
+   Fallback defaults are declared here so the theme works
+   without Style Settings installed.
+
+   Derived tokens compute the actual rgba alpha and the
+   backdrop blur from those two knobs. --tint is the surface
+   alpha; --tint-strong is +0.04 for popovers/menus so they
+   read slightly heavier than sidebars. */
 .theme-dark {
-  --av-glass-tint: rgba(255, 255, 255, 0.05);
-  --av-glass-tint-strong: rgba(255, 255, 255, 0.08);
-  --av-glass-blur: 28px;
+  --ventures-glass-transparency: 95; /* fallback if Style Settings absent */
+  --ventures-glass-thickness: 28px; /* fallback if Style Settings absent */
+  --av-glass-alpha: calc((100 - var(--ventures-glass-transparency)) * 0.01);
+  --av-glass-alpha-strong: calc(var(--av-glass-alpha) + 0.04);
+  --av-glass-blur: var(--ventures-glass-thickness);
+  --av-glass-tint: rgba(255, 255, 255, var(--av-glass-alpha));
+  --av-glass-tint-strong: rgba(255, 255, 255, var(--av-glass-alpha-strong));
   --av-glass-saturate: 180%;
   --av-glass-rim: rgba(255, 255, 255, 0.07);
   --av-glass-hairline: rgba(201, 168, 76, 0.14);
@@ -1393,24 +1407,6 @@ body {
   background-color: rgba(13, 5, 21, 0.55);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
-}
-
-/* --- Strength variants (Style Settings class-select) --- */
-.theme-dark.ventures-glass-subtle {
-  --av-glass-tint: rgba(255, 255, 255, 0.12);
-  --av-glass-tint-strong: rgba(45, 18, 72, 0.55);
-  --av-glass-blur: 16px;
-  --av-glass-saturate: 150%;
-  --av-glass-rim: rgba(255, 255, 255, 0.05);
-}
-
-.theme-dark.ventures-glass-bold {
-  --av-glass-tint: rgba(255, 255, 255, 0.025);
-  --av-glass-tint-strong: rgba(255, 255, 255, 0.04);
-  --av-glass-blur: 44px;
-  --av-glass-saturate: 200%;
-  --av-glass-rim: rgba(255, 255, 255, 0.10);
-  --av-glass-hairline: rgba(255, 255, 255, 0.12);
 }
 
 /* --- Off switch (toggle removed via Style Settings) ---
@@ -1560,22 +1556,24 @@ settings:
     type: class-toggle
     default: true
   -
-    id: ventures-glass-strength
-    title: Glass strength
-    description: Blur radius and translucency of glass surfaces.
-    type: class-select
-    default: ventures-glass-default
-    allowEmpty: false
-    options:
-      -
-        label: Subtle
-        value: ventures-glass-subtle
-      -
-        label: Default
-        value: ventures-glass-default
-      -
-        label: Bold
-        value: ventures-glass-bold
+    id: ventures-glass-transparency
+    title: Glass transparency
+    description: How see-through the glass is. 0 = solid tint, 100 = invisible tint (pure blur).
+    type: variable-number-slider
+    default: 95
+    min: 0
+    max: 100
+    step: 1
+  -
+    id: ventures-glass-thickness
+    title: Glass thickness
+    description: How much the glass distorts content behind it. Higher = more frosted-lens magnification (heavier blur).
+    type: variable-number-slider
+    default: 28
+    min: 0
+    max: 60
+    step: 1
+    format: px
 */
 /* --- Accent intensity variants --- */
 .theme-dark.ventures-accent-subtle {
