@@ -1209,6 +1209,151 @@ body {
 }
 
 /* ============================================
+   Carbon fiber — body background.
+   Pure CSS weave: two diagonal repeating-linear-
+   gradients cross-hatched at 45° / 135°, plus
+   a soft silver micro-noise pass for the
+   "shredded fiber" glint. Fixed-attached so it
+   reads as a tactile substrate, not a wallpaper
+   that scrolls with content.
+
+   Sits BEHIND content. Workspace panels paint
+   their own opaque backgrounds; the texture
+   only shows through translucent surfaces
+   (see _glass.scss) and the workspace empty
+   margins.
+   ============================================ */
+.theme-dark body {
+  background-color: var(--background-primary);
+  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.04) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.03) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.035) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.045) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.25) 0%, transparent 65%);
+  background-attachment: fixed;
+  background-size: 24px 24px, 24px 24px, 100% 100%;
+}
+
+/* --- Intensity variants (driven by Style Settings class-select) --- */
+.theme-dark.ventures-carbon-subtle body {
+  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.022) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.018) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.02) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.025) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.18) 0%, transparent 65%);
+}
+
+.theme-dark.ventures-carbon-bold body {
+  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.065) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.05) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.055) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.07) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.32) 0%, transparent 60%);
+  background-size: 22px 22px, 22px 22px, 100% 100%;
+}
+
+/* --- Off switch (toggle removed via Style Settings) --- */
+.theme-dark:not(.ventures-carbon-fiber) body {
+  background-image: none;
+}
+
+/* ============================================
+   Glass surfaces — Apple-style backdrop blur
+   on chrome elements. Sidebars and dropdowns
+   become translucent so the carbon-fiber body
+   reads through; a 1px top-inset highlight
+   gives the signature Apple "rim" lit edge.
+
+   Loaded AFTER workspace/_sidebar.scss so the
+   translucent bg-color overrides sidebar's
+   opaque var(--background-primary-alt).
+   ============================================ */
+/* --- Tunables (defaults; overridden by intensity variants) --- */
+.theme-dark {
+  --av-glass-alpha: 0.55; /* sidebar / large surfaces */
+  --av-glass-alpha-strong: 0.72; /* popovers / menus */
+  --av-glass-blur: 20px;
+  --av-glass-saturate: 140%;
+  --av-glass-rim: rgba(255, 255, 255, 0.06);
+  --av-glass-hairline: rgba(201, 168, 76, 0.18);
+}
+
+/* --- Sidebars --- */
+.theme-dark .workspace-split.mod-left-split,
+.theme-dark .workspace-split.mod-right-split,
+.theme-dark .workspace-sidedock-vault-profile,
+.theme-dark .workspace-drawer {
+  background-color: rgba(22, 8, 40, var(--av-glass-alpha));
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  box-shadow: inset 0 1px 0 var(--av-glass-rim);
+}
+
+/* Right side gets its rim on the inner edge */
+.theme-dark .workspace-split.mod-right-split {
+  box-shadow: inset 0 1px 0 var(--av-glass-rim), inset 1px 0 0 rgba(255, 255, 255, 0.04);
+}
+
+/* --- Dropdowns, menus, suggestion containers, popovers --- */
+.theme-dark .suggestion-container,
+.theme-dark .menu,
+.theme-dark .popover,
+.theme-dark .tooltip,
+.theme-dark .HyperMD-popover,
+.theme-dark .dropdown {
+  background-color: rgba(45, 18, 72, var(--av-glass-alpha-strong));
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(160%);
+  backdrop-filter: blur(var(--av-glass-blur)) saturate(160%);
+  border: 1px solid var(--av-glass-hairline);
+  box-shadow: inset 0 1px 0 var(--av-glass-rim), 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Selected / hovered suggestion + menu items — gold wash that
+   reads against the glass instead of the original opaque purple */
+.theme-dark .suggestion-item.is-selected,
+.theme-dark .suggestion-item:hover,
+.theme-dark .menu-item:hover {
+  background-color: rgba(201, 168, 76, 0.14);
+  color: var(--av-gold-light);
+}
+
+/* Native <select>-style dropdowns Obsidian renders in Settings */
+.theme-dark select.dropdown {
+  background-color: rgba(45, 18, 72, var(--av-glass-alpha-strong));
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(140%);
+  backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(140%);
+  border: 1px solid var(--av-glass-hairline);
+}
+
+/* --- Strength variants (Style Settings class-select) --- */
+.theme-dark.ventures-glass-subtle {
+  --av-glass-alpha: 0.72;
+  --av-glass-alpha-strong: 0.85;
+  --av-glass-blur: 12px;
+  --av-glass-saturate: 130%;
+}
+
+.theme-dark.ventures-glass-bold {
+  --av-glass-alpha: 0.38;
+  --av-glass-alpha-strong: 0.55;
+  --av-glass-blur: 30px;
+  --av-glass-saturate: 170%;
+  --av-glass-rim: rgba(255, 255, 255, 0.09);
+  --av-glass-hairline: rgba(201, 168, 76, 0.25);
+}
+
+/* --- Off switch (toggle removed via Style Settings) ---
+   Restore opaque surfaces from _sidebar.scss baseline. */
+.theme-dark:not(.ventures-glass) .workspace-split.mod-left-split,
+.theme-dark:not(.ventures-glass) .workspace-split.mod-right-split,
+.theme-dark:not(.ventures-glass) .workspace-sidedock-vault-profile,
+.theme-dark:not(.ventures-glass) .workspace-drawer {
+  background-color: var(--background-primary-alt);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.theme-dark:not(.ventures-glass) .suggestion-container,
+.theme-dark:not(.ventures-glass) .menu,
+.theme-dark:not(.ventures-glass) .popover,
+.theme-dark:not(.ventures-glass) .tooltip,
+.theme-dark:not(.ventures-glass) .HyperMD-popover,
+.theme-dark:not(.ventures-glass) .dropdown {
+  background-color: var(--av-purple-deep);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ============================================
    Style Settings plugin integration
    https://github.com/mgmeyers/obsidian-style-settings
    The YAML block below is parsed by the plugin
@@ -1276,6 +1421,52 @@ settings:
     description: Tightens line-height and paddings ~15% across the editor and lists.
     type: class-toggle
     default: false
+  -
+    id: ventures-carbon-fiber
+    title: Carbon fiber background
+    description: Subtle woven carbon-fiber texture behind translucent surfaces.
+    type: class-toggle
+    default: true
+  -
+    id: ventures-carbon-intensity
+    title: Carbon fiber intensity
+    description: How visible the weave reads through translucent chrome.
+    type: class-select
+    default: ventures-carbon-default
+    allowEmpty: false
+    options:
+      -
+        label: Subtle
+        value: ventures-carbon-subtle
+      -
+        label: Default
+        value: ventures-carbon-default
+      -
+        label: Bold
+        value: ventures-carbon-bold
+  -
+    id: ventures-glass
+    title: Glass surfaces
+    description: Apple-style translucent backdrop-blur on sidebars, dropdowns, menus, suggestion lists, and popovers.
+    type: class-toggle
+    default: true
+  -
+    id: ventures-glass-strength
+    title: Glass strength
+    description: Blur radius and translucency of glass surfaces.
+    type: class-select
+    default: ventures-glass-default
+    allowEmpty: false
+    options:
+      -
+        label: Subtle
+        value: ventures-glass-subtle
+      -
+        label: Default
+        value: ventures-glass-default
+      -
+        label: Bold
+        value: ventures-glass-bold
 */
 /* --- Accent intensity variants --- */
 .theme-dark.ventures-accent-subtle {
