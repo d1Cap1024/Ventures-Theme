@@ -7,11 +7,11 @@
    reads as a tactile substrate, not a wallpaper
    that scrolls with content.
 
-   Sits BEHIND content. Workspace panels paint
-   their own opaque backgrounds; the texture
-   only shows through translucent surfaces
-   (see _glass.scss) and the workspace empty
-   margins.
+   Visible everywhere the chrome above is glass.
+   Workspace shells (panes, empty states) are
+   made transparent in _glass.scss so the weave
+   reads through; only the writing surface
+   (markdown editor / preview) stays opaque.
    ============================================ */
 
 .theme-dark body {
@@ -20,23 +20,23 @@
     /* Long, faint silver streaks (the visible "strands") */
     repeating-linear-gradient(
       45deg,
-      rgba(192, 192, 192, 0.040) 0 1px,
+      rgba(192, 192, 192, 0.12) 0 1px,
       transparent 1px 7px,
-      rgba(122, 122, 140, 0.030) 7px 8px,
+      rgba(122, 122, 140, 0.09) 7px 8px,
       transparent 8px 14px
     ),
     /* Cross-weave: opposite diagonal, slightly offset cadence */
     repeating-linear-gradient(
       135deg,
-      rgba(192, 192, 192, 0.035) 0 1px,
+      rgba(192, 192, 192, 0.11) 0 1px,
       transparent 1px 6px,
-      rgba(74, 30, 122, 0.045) 6px 7px,
+      rgba(74, 30, 122, 0.14) 6px 7px,
       transparent 7px 13px
     ),
     /* Subtle violet wash so the weave doesn't read as pure grey */
     radial-gradient(
       ellipse at 50% 0%,
-      rgba(45, 18, 72, 0.25) 0%,
+      rgba(45, 18, 72, 0.35) 0%,
       transparent 65%
     );
   background-attachment: fixed;
@@ -49,21 +49,21 @@
   background-image:
     repeating-linear-gradient(
       45deg,
-      rgba(192, 192, 192, 0.022) 0 1px,
+      rgba(192, 192, 192, 0.06) 0 1px,
       transparent 1px 7px,
-      rgba(122, 122, 140, 0.018) 7px 8px,
+      rgba(122, 122, 140, 0.04) 7px 8px,
       transparent 8px 14px
     ),
     repeating-linear-gradient(
       135deg,
-      rgba(192, 192, 192, 0.020) 0 1px,
+      rgba(192, 192, 192, 0.05) 0 1px,
       transparent 1px 6px,
-      rgba(74, 30, 122, 0.025) 6px 7px,
+      rgba(74, 30, 122, 0.07) 6px 7px,
       transparent 7px 13px
     ),
     radial-gradient(
       ellipse at 50% 0%,
-      rgba(45, 18, 72, 0.18) 0%,
+      rgba(45, 18, 72, 0.22) 0%,
       transparent 65%
     );
 }
@@ -72,21 +72,21 @@
   background-image:
     repeating-linear-gradient(
       45deg,
-      rgba(192, 192, 192, 0.065) 0 1px,
+      rgba(192, 192, 192, 0.20) 0 1px,
       transparent 1px 7px,
-      rgba(122, 122, 140, 0.050) 7px 8px,
+      rgba(122, 122, 140, 0.16) 7px 8px,
       transparent 8px 14px
     ),
     repeating-linear-gradient(
       135deg,
-      rgba(192, 192, 192, 0.055) 0 1px,
+      rgba(192, 192, 192, 0.18) 0 1px,
       transparent 1px 6px,
-      rgba(74, 30, 122, 0.070) 6px 7px,
+      rgba(74, 30, 122, 0.22) 6px 7px,
       transparent 7px 13px
     ),
     radial-gradient(
       ellipse at 50% 0%,
-      rgba(45, 18, 72, 0.32) 0%,
+      rgba(45, 18, 72, 0.40) 0%,
       transparent 60%
     );
   background-size: 22px 22px, 22px 22px, 100% 100%;
