@@ -1,0 +1,55 @@
+/* ============================================
+   Hex watermark — synthesized from the AV logo
+   geometry. Hexagon with a six-spoke spiderweb
+   interior, rendered at 6% opacity in purple-mid
+   on empty workspace surfaces (new tab, empty
+   pane).
+   ============================================ */
+
+/* Single inlined SVG, URL-encoded so it works in url("data:image/svg+xml,...") */
+/* stroke=#4A1E7A purple-mid; opacity controlled by --av-hex-opacity on parent */
+
+$hex-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%234A1E7A' stroke-width='1'><polygon points='100,18 168,58 168,142 100,182 32,142 32,58'/><polygon points='100,40 150,68 150,132 100,160 50,132 50,68'/><line x1='100' y1='100' x2='100' y2='18'/><line x1='100' y1='100' x2='168' y2='58'/><line x1='100' y1='100' x2='168' y2='142'/><line x1='100' y1='100' x2='100' y2='182'/><line x1='100' y1='100' x2='32' y2='142'/><line x1='100' y1='100' x2='32' y2='58'/><circle cx='100' cy='100' r='3' fill='%23C9A84C' stroke='none'/></svg>";
+
+.theme-dark .empty-state,
+.theme-dark .workspace-leaf-content[data-type="empty"] {
+  background-color: var(--background-primary);
+  background-image: url("#{$hex-svg}");
+  background-repeat: no-repeat;
+  background-position: center 35%;
+  background-size: 380px 380px;
+  opacity: 1;
+}
+
+/* Reduce contrast of the SVG itself by layering a translucent overlay
+   sized to match. We use a separate ::before so the SVG keeps its
+   crispness regardless of opacity tweaks. */
+.theme-dark .empty-state > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dim via CSS variable (Style Settings can toggle this) */
+.theme-dark .empty-state {
+  background-blend-mode: normal;
+}
+
+.theme-dark .empty-state::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--background-primary);
+  opacity: calc(1 - var(--av-hex-opacity));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.theme-dark .empty-state-title,
+.theme-dark .empty-state-action {
+  color: var(--av-silver-muted);
+  font-family: var(--font-text);
+}
+
+.theme-dark .empty-state-action:hover {
+  color: var(--av-gold);
+}

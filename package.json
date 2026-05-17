@@ -1,0 +1,15 @@
+{
+  "name": "ventures-theme",
+  "version": "0.1.0",
+  "description": "Obsidian theme mirroring the Armando Ventures design language: deep purple-black, matte gold, editorial serif headings.",
+  "private": true,
+  "scripts": {
+    "build": "sass src/theme.scss theme.css --style=expanded --no-source-map",
+    "watch": "sass src/theme.scss theme.css --watch --style=expanded --no-source-map"
+  },
+  "devDependencies": {
+    "sass": "^1.77.0"
+  },
+  "author": "Armando Ventures",
+  "license": "MIT"
+}

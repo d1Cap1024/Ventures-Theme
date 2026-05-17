@@ -1,0 +1,63 @@
+/* ============================================
+   Tags — no pill background. Replaced with a
+   gold "principle marker" dot followed by the
+   tag name in gold. Mirrors .principle-marker
+   from the AV site.
+   ============================================ */
+
+.theme-dark a.tag,
+.theme-dark .cm-hashtag,
+.theme-dark .cm-tag-name {
+  background: var(--tag-background);
+  color: var(--av-tag-dot-color);
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: 0.92em;
+  letter-spacing: 0.01em;
+  padding: var(--tag-padding-y) var(--tag-padding-x);
+  border: none;
+  border-radius: var(--tag-radius);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+/* The gold dot marker — only on rendered tags in preview / pills.
+   We keep it off the editor-mode .cm-hashtag because it would
+   interfere with typing. */
+.theme-dark .markdown-preview-view a.tag::before,
+.theme-dark .tag-pane-tag .tag-pane-tag-text::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--av-tag-dot-color);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.theme-dark a.tag:hover,
+.theme-dark .cm-hashtag:hover {
+  background: var(--tag-background-hover);
+  color: var(--av-gold-light);
+}
+
+/* Tag pane (left sidebar) */
+.theme-dark .tag-pane-tag {
+  color: var(--av-silver-light);
+}
+.theme-dark .tag-pane-tag-count {
+  color: var(--av-silver-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hash glyph in editor — dimmed, gold on active line */
+.theme-dark .cm-formatting-hashtag {
+  color: var(--av-silver-muted) !important;
+  opacity: 0.6;
+}
+.theme-dark .cm-active .cm-formatting-hashtag {
+  color: var(--av-gold) !important;
+  opacity: 1;
+}

@@ -1,0 +1,51 @@
+/* ============================================
+   Sidebars — flat, no inner shadow, hairline
+   purple divider against the workspace.
+   ============================================ */
+
+.theme-dark .workspace-split.mod-left-split,
+.theme-dark .workspace-split.mod-right-split,
+.theme-dark .workspace-sidedock-vault-profile,
+.theme-dark .workspace-drawer {
+  background: var(--background-primary-alt);
+  box-shadow: none;
+  border-right: 1px solid var(--divider-color);
+}
+
+.theme-dark .workspace-split.mod-right-split {
+  border-right: none;
+  border-left: 1px solid var(--divider-color);
+}
+
+/* Pane headers (Files / Search / Outline titles) */
+.theme-dark .nav-header,
+.theme-dark .workspace-leaf-header,
+.theme-dark .view-header {
+  background: transparent;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.theme-dark .view-header-title {
+  color: var(--av-silver-light);
+  font-family: var(--font-text);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.theme-dark .view-header-icon {
+  color: var(--av-silver-muted);
+}
+.theme-dark .view-header-icon:hover {
+  color: var(--av-gold);
+}
+
+/* Outline / search nav-action buttons */
+.theme-dark .nav-action-button {
+  color: var(--av-silver-muted);
+}
+.theme-dark .nav-action-button:hover {
+  color: var(--av-gold);
+}
+.theme-dark .nav-action-button.is-active {
+  color: var(--av-gold);
+}

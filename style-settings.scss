@@ -1,0 +1,125 @@
+/* ============================================
+   Style Settings plugin integration
+   https://github.com/mgmeyers/obsidian-style-settings
+   The YAML block below is parsed by the plugin
+   and surfaces as toggles / pickers in the
+   Settings → Style Settings → Ventures pane.
+   ============================================ */
+
+/* @settings
+
+name: Ventures
+id: ventures-theme
+settings:
+  -
+    id: ventures-accent-intensity
+    title: Accent intensity
+    description: How loud the gold should be.
+    type: class-select
+    default: ventures-accent-bold
+    allowEmpty: false
+    options:
+      -
+        label: Bold (default)
+        value: ventures-accent-bold
+      -
+        label: Subtle
+        value: ventures-accent-subtle
+      -
+        label: Punch
+        value: ventures-accent-punch
+  -
+    id: ventures-heading-font
+    title: Heading font
+    description: Display family used for h1 and h2.
+    type: class-select
+    default: ventures-heading-playfair
+    allowEmpty: false
+    options:
+      -
+        label: Playfair Display (default)
+        value: ventures-heading-playfair
+      -
+        label: Inter (sans)
+        value: ventures-heading-inter
+  -
+    id: ventures-hex-watermark
+    title: Hex watermark on empty panes
+    description: Show the hexagon spiderweb mark on new-tab and empty-pane backgrounds.
+    type: class-toggle
+    default: true
+  -
+    id: ventures-gold-glow
+    title: Gold glow accent
+    description: Subtle radial gold gradient anchored top-right of the workspace.
+    type: class-toggle
+    default: true
+  -
+    id: ventures-tag-dot-color
+    title: Tag dot color
+    description: The "principle marker" dot rendered before each tag.
+    type: variable-color
+    format: hex
+    default: '#C9A84C'
+  -
+    id: ventures-compact-density
+    title: Compact density
+    description: Tightens line-height and paddings ~15% across the editor and lists.
+    type: class-toggle
+    default: false
+*/
+
+/* --- Accent intensity variants --- */
+.theme-dark.ventures-accent-subtle {
+  --av-gold: #B59643;
+  --av-gold-light: #D4B566;
+  --interactive-accent: var(--av-gold);
+  --text-accent: var(--av-gold);
+  --link-color: var(--av-gold);
+}
+
+.theme-dark.ventures-accent-punch {
+  --av-gold: #E8C97A;
+  --av-gold-light: #F5DD96;
+  --interactive-accent: var(--av-gold);
+  --text-accent: var(--av-gold);
+  --link-color: var(--av-gold);
+}
+
+/* --- Heading font variant --- */
+.theme-dark.ventures-heading-inter {
+  --heading-font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.theme-dark.ventures-heading-inter .markdown-preview-view h1,
+.theme-dark.ventures-heading-inter .markdown-preview-view h2 {
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* --- Hex watermark toggle --- */
+.theme-dark:not(.ventures-hex-watermark) .empty-state {
+  background-image: none;
+}
+.theme-dark:not(.ventures-hex-watermark) .empty-state::after {
+  display: none;
+}
+
+/* --- Gold glow toggle --- */
+.theme-dark:not(.ventures-gold-glow) .workspace::before {
+  display: none;
+}
+
+/* --- Compact density --- */
+.theme-dark.ventures-compact-density {
+  --line-height-normal: 1.45;
+  --font-text-size: 15px;
+}
+.theme-dark.ventures-compact-density .nav-file-title,
+.theme-dark.ventures-compact-density .nav-folder-title {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+.theme-dark.ventures-compact-density .markdown-preview-view p,
+.theme-dark.ventures-compact-density .markdown-source-view.mod-cm6 .cm-line {
+  line-height: 1.5;
+}

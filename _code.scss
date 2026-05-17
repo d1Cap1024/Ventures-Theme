@@ -1,0 +1,113 @@
+/* ============================================
+   Code — JetBrains Mono on a deeper purple
+   surface; gold for keywords, gold-light for
+   strings.
+   ============================================ */
+
+/* Inline code — gold text on a subtle purple tint */
+.theme-dark code,
+.theme-dark .cm-inline-code,
+.theme-dark :not(pre) > code {
+  background: rgba(74, 30, 122, 0.25);
+  color: var(--av-gold);
+  font-family: var(--font-monospace);
+  font-size: 0.88em;
+  padding: 0.12em 0.4em;
+  border-radius: var(--radius-s);
+  border: 1px solid rgba(74, 30, 122, 0.4);
+}
+
+/* Code blocks */
+.theme-dark pre,
+.theme-dark .markdown-source-view .HyperMD-codeblock,
+.theme-dark .markdown-rendered pre code {
+  background: var(--code-background);
+  color: var(--av-silver-light);
+  font-family: var(--font-monospace);
+  border-radius: var(--radius-m);
+  border: 1px solid rgba(74, 30, 122, 0.4);
+}
+
+.theme-dark .markdown-rendered pre {
+  padding: 0.85em 1em;
+}
+
+.theme-dark .markdown-rendered pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 0.88em;
+  line-height: 1.55;
+}
+
+/* Source-mode code lines — flat purple-deep background per line, gold gutter rule */
+.theme-dark .markdown-source-view .HyperMD-codeblock {
+  font-size: 0.88em;
+  line-height: 1.55;
+  border-radius: 0;
+  border-left: 2px solid rgba(201, 168, 76, 0.4);
+  border-right: none;
+}
+.theme-dark .markdown-source-view .HyperMD-codeblock-begin,
+.theme-dark .markdown-source-view .HyperMD-codeblock-begin-bg {
+  border-radius: var(--radius-m) var(--radius-m) 0 0;
+}
+.theme-dark .markdown-source-view .HyperMD-codeblock-end,
+.theme-dark .markdown-source-view .HyperMD-codeblock-end-bg {
+  border-radius: 0 0 var(--radius-m) var(--radius-m);
+}
+
+/* Code-fence backticks ``` — dimmed */
+.theme-dark .cm-formatting-code-block {
+  color: var(--av-silver-muted) !important;
+  opacity: 0.6;
+}
+
+/* Prism / Obsidian syntax token colors (reading mode) */
+.theme-dark .markdown-rendered .token.keyword,
+.theme-dark .markdown-rendered .token.tag,
+.theme-dark .markdown-rendered .token.selector,
+.theme-dark .markdown-rendered .token.important { color: var(--av-gold); }
+
+.theme-dark .markdown-rendered .token.string,
+.theme-dark .markdown-rendered .token.attr-value,
+.theme-dark .markdown-rendered .token.regex   { color: var(--av-gold-light); }
+
+.theme-dark .markdown-rendered .token.function,
+.theme-dark .markdown-rendered .token.class-name { color: var(--av-gold-light); }
+
+.theme-dark .markdown-rendered .token.comment,
+.theme-dark .markdown-rendered .token.prolog,
+.theme-dark .markdown-rendered .token.doctype,
+.theme-dark .markdown-rendered .token.cdata    { color: var(--av-silver-muted); font-style: italic; }
+
+.theme-dark .markdown-rendered .token.number,
+.theme-dark .markdown-rendered .token.boolean,
+.theme-dark .markdown-rendered .token.constant { color: var(--av-gold); }
+
+.theme-dark .markdown-rendered .token.operator,
+.theme-dark .markdown-rendered .token.punctuation { color: var(--av-silver); }
+
+.theme-dark .markdown-rendered .token.variable,
+.theme-dark .markdown-rendered .token.property    { color: var(--av-silver-light); }
+
+/* Editor (CodeMirror) syntax — mirror the same palette */
+.theme-dark .cm-keyword,
+.theme-dark .cm-tag,
+.theme-dark .cm-builtin     { color: var(--av-gold) !important; }
+
+.theme-dark .cm-string,
+.theme-dark .cm-string-2,
+.theme-dark .cm-attribute   { color: var(--av-gold-light) !important; }
+
+.theme-dark .cm-comment     { color: var(--av-silver-muted) !important; font-style: italic; }
+
+.theme-dark .cm-number,
+.theme-dark .cm-atom        { color: var(--av-gold) !important; }
+
+.theme-dark .cm-def,
+.theme-dark .cm-variable-2  { color: var(--av-silver-light) !important; }
+
+.theme-dark .cm-property    { color: var(--av-gold-light) !important; }
+.theme-dark .cm-operator    { color: var(--av-silver) !important; }
+.theme-dark .cm-meta        { color: var(--av-silver-muted) !important; }

@@ -1,0 +1,47 @@
+/* ============================================
+   Tables — purple header row, hairline gold
+   border, alt-row purple wash, tabular nums.
+   ============================================ */
+
+.theme-dark .markdown-preview-view table,
+.theme-dark .markdown-rendered table {
+  border-collapse: collapse;
+  border: 1px solid rgba(74, 30, 122, 0.5);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  font-family: var(--font-text);
+  font-size: 0.95em;
+  font-variant-numeric: tabular-nums;
+  margin: 1em 0;
+}
+
+.theme-dark .markdown-rendered thead {
+  background: var(--av-purple-dark);
+  border-bottom: 1px solid var(--av-gold);
+}
+
+.theme-dark .markdown-rendered th {
+  color: var(--av-gold);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.78em;
+  padding: 0.6em 0.9em;
+  text-align: left;
+  border: none;
+}
+
+.theme-dark .markdown-rendered td {
+  color: var(--av-silver-light);
+  padding: 0.55em 0.9em;
+  border: none;
+  border-top: 1px solid rgba(74, 30, 122, 0.3);
+}
+
+.theme-dark .markdown-rendered tbody tr:nth-child(even) {
+  background: rgba(45, 18, 72, 0.25);
+}
+
+.theme-dark .markdown-rendered tbody tr:hover {
+  background: rgba(201, 168, 76, 0.06);
+}

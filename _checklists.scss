@@ -1,0 +1,48 @@
+/* ============================================
+   Checklists — gold square checkbox, dim completed
+   ============================================ */
+
+.theme-dark input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: transparent;
+  border: 1.5px solid var(--av-purple-mid);
+  border-radius: var(--radius-s);
+  position: relative;
+  vertical-align: middle;
+  margin: 0 0.4em 0.15em 0;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.theme-dark input[type="checkbox"]:hover {
+  border-color: var(--av-gold);
+}
+
+.theme-dark input[type="checkbox"]:checked {
+  background: var(--av-gold);
+  border-color: var(--av-gold);
+}
+
+.theme-dark input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--av-black);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Completed task — dim the text */
+.theme-dark .markdown-rendered ul > li.task-list-item.is-checked,
+.theme-dark .markdown-source-view .task-list-item.is-checked {
+  color: var(--av-silver-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--av-silver-muted);
+  text-decoration-thickness: 0.5px;
+}

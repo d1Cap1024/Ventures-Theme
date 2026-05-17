@@ -1,0 +1,83 @@
+/* ============================================
+   Callouts — purple surface, 3px gold left rule,
+   gold title, gold-tinted icon. No rounded corners
+   on the rule edge.
+   ============================================ */
+
+.theme-dark .callout {
+  background: var(--av-purple-deep);
+  border: none;
+  border-left: 3px solid var(--callout-color, var(--av-gold));
+  border-radius: 0 var(--radius-m) var(--radius-m) 0;
+  padding: 0.9em 1.1em 0.9em 1em;
+  margin: 1em 0;
+  mix-blend-mode: normal;
+}
+
+.theme-dark .callout-title {
+  padding: 0 0 0.35em 0;
+  background: transparent;
+  color: var(--callout-color, var(--av-gold));
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 0.95em;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.theme-dark .callout-title-inner {
+  color: inherit;
+  font-weight: 600;
+}
+
+.theme-dark .callout-icon {
+  color: var(--callout-color, var(--av-gold));
+  opacity: 0.95;
+}
+.theme-dark .callout-icon svg {
+  stroke-width: 2px;
+}
+
+.theme-dark .callout-content {
+  color: var(--av-silver-light);
+  padding: 0;
+}
+.theme-dark .callout-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Foldable callouts — gold chevron */
+.theme-dark .callout-fold {
+  color: var(--av-gold);
+  opacity: 0.7;
+}
+.theme-dark .callout-fold:hover {
+  opacity: 1;
+}
+
+/* Per-type accent (left rule + title color), via Obsidian's --callout-color */
+.theme-dark .callout[data-callout="note"]      { --callout-color: var(--av-gold); }
+.theme-dark .callout[data-callout="info"]      { --callout-color: var(--av-gold-light); }
+.theme-dark .callout[data-callout="tip"],
+.theme-dark .callout[data-callout="hint"],
+.theme-dark .callout[data-callout="important"] { --callout-color: var(--av-gold); }
+.theme-dark .callout[data-callout="success"],
+.theme-dark .callout[data-callout="check"],
+.theme-dark .callout[data-callout="done"]      { --callout-color: #38A169; }
+.theme-dark .callout[data-callout="question"],
+.theme-dark .callout[data-callout="help"],
+.theme-dark .callout[data-callout="faq"]       { --callout-color: var(--av-gold-light); }
+.theme-dark .callout[data-callout="warning"],
+.theme-dark .callout[data-callout="caution"],
+.theme-dark .callout[data-callout="attention"] { --callout-color: var(--av-gold); }
+.theme-dark .callout[data-callout="failure"],
+.theme-dark .callout[data-callout="fail"],
+.theme-dark .callout[data-callout="missing"],
+.theme-dark .callout[data-callout="danger"],
+.theme-dark .callout[data-callout="error"],
+.theme-dark .callout[data-callout="bug"]       { --callout-color: #E53E3E; }
+.theme-dark .callout[data-callout="example"]   { --callout-color: var(--av-gold-light); }
+.theme-dark .callout[data-callout="quote"],
+.theme-dark .callout[data-callout="cite"]      { --callout-color: var(--av-silver-muted); }

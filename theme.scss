@@ -1,0 +1,36 @@
+/* ============================================
+   Ventures Theme for Obsidian
+   Mirrors the Armando Ventures design language.
+   Dark mode only. See src/style-settings.scss
+   for user-tunable knobs.
+   ============================================ */
+
+/* Order matters: fonts first so @import lands at the top of the
+   compiled CSS, then tokens, then typography, then components,
+   then workspace chrome, then decorative layers, then Style
+   Settings (so its variants can override anything above). */
+
+@use 'base/fonts';
+@use 'base/variables';
+@use 'base/typography';
+
+@use 'components/headings';
+@use 'components/links';
+@use 'components/tags';
+@use 'components/callouts';
+@use 'components/blockquote';
+@use 'components/code';
+@use 'components/tables';
+@use 'components/checklists';
+
+@use 'workspace/sidebar';
+@use 'workspace/ribbon';
+@use 'workspace/tabs';
+@use 'workspace/status-bar';
+@use 'workspace/file-explorer';
+@use 'workspace/graph';
+
+@use 'decoration/hex-watermark';
+@use 'decoration/gold-glow';
+
+@use 'style-settings';

@@ -1,0 +1,41 @@
+/* ============================================
+   Ribbon (leftmost icon strip) — gold accent
+   on hover, gold dot for active item.
+   ============================================ */
+
+.theme-dark .workspace-ribbon {
+  background: var(--ribbon-background);
+  border-right: 1px solid var(--divider-color);
+}
+
+.theme-dark .side-dock-ribbon-action,
+.theme-dark .workspace-ribbon .clickable-icon {
+  color: var(--av-silver-muted);
+  border-radius: var(--radius-s);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.theme-dark .side-dock-ribbon-action:hover,
+.theme-dark .workspace-ribbon .clickable-icon:hover {
+  color: var(--av-gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.theme-dark .side-dock-ribbon-action.is-active,
+.theme-dark .workspace-ribbon .clickable-icon.is-active {
+  color: var(--av-gold);
+  position: relative;
+}
+
+/* Active item gets a small gold "principle marker" dot on its right edge */
+.theme-dark .side-dock-ribbon-action.is-active::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--av-gold);
+}

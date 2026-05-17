@@ -1,0 +1,52 @@
+/* ============================================
+   Links — gold, with a dotted underline on hover
+   ============================================ */
+
+.theme-dark a,
+.theme-dark .cm-link,
+.theme-dark .cm-hmd-internal-link,
+.theme-dark .internal-link,
+.theme-dark .external-link {
+  color: var(--av-gold);
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  border-bottom: 1px dotted transparent;
+}
+
+.theme-dark a:hover,
+.theme-dark .cm-link:hover,
+.theme-dark .cm-hmd-internal-link:hover,
+.theme-dark .internal-link:hover,
+.theme-dark .external-link:hover {
+  color: var(--av-gold-light);
+  border-bottom-color: var(--av-gold-light);
+}
+
+/* Unresolved internal links — dotted underline + muted color */
+.theme-dark .internal-link.is-unresolved,
+.theme-dark .cm-hmd-internal-link.cm-invalid-link {
+  color: var(--av-silver-muted);
+  border-bottom: 1px dotted var(--av-silver-muted);
+  opacity: 0.85;
+}
+
+.theme-dark .internal-link.is-unresolved:hover {
+  color: var(--av-gold);
+  border-bottom-color: var(--av-gold);
+  opacity: 1;
+}
+
+/* External link icon (the small arrow Obsidian appends) */
+.theme-dark .external-link {
+  background-image: none;
+  padding-right: 0;
+}
+.theme-dark .external-link::after {
+  content: ' \2197';
+  font-size: 0.85em;
+  color: var(--av-gold);
+  margin-left: 0.15em;
+}
+.theme-dark .external-link:hover::after {
+  color: var(--av-gold-light);
+}

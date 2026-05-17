@@ -1,0 +1,1337 @@
+@charset "UTF-8";
+/* ============================================
+   Ventures Theme for Obsidian
+   Mirrors the Armando Ventures design language.
+   Dark mode only. See src/style-settings.scss
+   for user-tunable knobs.
+   ============================================ */
+/* Order matters: fonts first so @import lands at the top of the
+   compiled CSS, then tokens, then typography, then components,
+   then workspace chrome, then decorative layers, then Style
+   Settings (so its variants can override anything above). */
+/* ============================================
+   Web fonts — Playfair Display (display)
+                Inter (body / UI)
+                JetBrains Mono (monospace)
+   Mirrors the font stack used on armandoventures.com
+   ============================================ */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+/* ============================================
+   Design tokens
+   Lifted from armando-ventures-site/styles.css.
+   Scoped under .theme-dark so light mode falls
+   through to Obsidian defaults.
+   ============================================ */
+.theme-dark {
+  /* --- Brand palette (raw) --- */
+  --av-black: #0D0515;
+  --av-purple-deep: #1E0A2E;
+  --av-purple-dark: #2D1248;
+  --av-purple-mid: #4A1E7A;
+  --av-gold: #C9A84C;
+  --av-gold-light: #E8C97A;
+  --av-gold-dark: #8B6914;
+  --av-silver: #C0C0C0;
+  --av-silver-light: #E8E8E8;
+  --av-silver-muted: #7A7A8C;
+  --av-white: #FFFFFF;
+  /* --- Backgrounds --- */
+  --background-primary: var(--av-black);
+  --background-primary-alt: #160828;
+  --background-secondary: var(--av-purple-deep);
+  --background-secondary-alt: var(--av-purple-dark);
+  --background-modifier-border: var(--av-purple-mid);
+  --background-modifier-border-hover: var(--av-gold);
+  --background-modifier-border-focus: var(--av-gold);
+  --background-modifier-hover: rgba(45, 18, 72, 0.6);
+  --background-modifier-active-hover: rgba(201, 168, 76, 0.12);
+  --background-modifier-form-field: var(--av-purple-deep);
+  --background-modifier-form-field-highlighted: var(--av-purple-dark);
+  --background-modifier-success: rgba(56, 161, 105, 0.20);
+  --background-modifier-error: rgba(229, 62, 62, 0.20);
+  --background-modifier-error-rgb: 229, 62, 62;
+  --background-modifier-error-hover: rgba(229, 62, 62, 0.30);
+  --background-modifier-cover: rgba(13, 5, 21, 0.85);
+  /* --- Text --- */
+  --text-normal: var(--av-silver-light);
+  --text-muted: #A8A8B8;
+  --text-faint: var(--av-silver-muted);
+  --text-on-accent: var(--av-black);
+  --text-error: #E53E3E;
+  --text-success: #38A169;
+  --text-warning: var(--av-gold-light);
+  --text-accent: var(--av-gold);
+  --text-accent-hover: var(--av-gold-light);
+  --text-selection: rgba(201, 168, 76, 0.22);
+  --text-highlight-bg: rgba(201, 168, 76, 0.28);
+  /* --- Interactive accents --- */
+  --interactive-normal: var(--av-purple-dark);
+  --interactive-hover: var(--av-purple-mid);
+  --interactive-accent: var(--av-gold);
+  --interactive-accent-hover: var(--av-gold-light);
+  --interactive-accent-rgb: 201, 168, 76;
+  /* --- Links --- */
+  --link-color: var(--av-gold);
+  --link-color-hover: var(--av-gold-light);
+  --link-external-color: var(--av-gold);
+  --link-external-color-hover: var(--av-gold-light);
+  --link-unresolved-color: var(--av-silver-muted);
+  --link-unresolved-opacity: 0.7;
+  --link-unresolved-filter: none;
+  --link-unresolved-decoration-style: dotted;
+  /* --- Borders & dividers --- */
+  --divider-color: rgba(74, 30, 122, 0.4);
+  --divider-color-hover: var(--av-gold);
+  --border-width: 1px;
+  /* --- Radii (sharp, matches site's 4px convention) --- */
+  --radius-s: 2px;
+  --radius-m: 4px;
+  --radius-l: 6px;
+  --radius-xl: 8px;
+  /* --- Shadows (flat — site uses none) --- */
+  --shadow-s: none;
+  --shadow-m: none;
+  --shadow-l: none;
+  --input-shadow: none;
+  --input-shadow-hover: none;
+  /* --- Scrollbars --- */
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: rgba(74, 30, 122, 0.5);
+  --scrollbar-active-thumb-bg: var(--av-gold);
+  /* --- Code --- */
+  --code-background: #160628;
+  --code-normal: var(--av-silver-light);
+  --code-comment: var(--av-silver-muted);
+  --code-keyword: var(--av-gold);
+  --code-function: var(--av-gold-light);
+  --code-string: #E8C97A;
+  --code-value: #C0C0C0;
+  --code-tag: var(--av-gold);
+  --code-property: var(--av-gold-light);
+  --code-operator: var(--av-silver);
+  --code-punctuation: var(--av-silver-muted);
+  --code-attribute: var(--av-gold);
+  --code-class: var(--av-gold-light);
+  --code-constant: var(--av-gold);
+  --code-variable: var(--av-silver-light);
+  --code-important: #E53E3E;
+  /* --- Tags --- */
+  --tag-color: var(--av-gold);
+  --tag-color-hover: var(--av-gold-light);
+  --tag-background: transparent;
+  --tag-background-hover: rgba(201, 168, 76, 0.10);
+  --tag-border-color: transparent;
+  --tag-padding-x: 0.35em;
+  --tag-padding-y: 0.05em;
+  --tag-radius: 2px;
+  --tag-weight: 500;
+  /* --- Callouts --- */
+  --callout-border-width: 0px;
+  --callout-border-opacity: 0;
+  --callout-padding: var(--size-4-3) var(--size-4-4);
+  --callout-radius: var(--radius-m);
+  --callout-blend-mode: normal;
+  --callout-default: var(--av-gold);
+  --callout-info: var(--av-gold-light);
+  --callout-tip: var(--av-gold);
+  --callout-success: #38A169;
+  --callout-question: var(--av-gold-light);
+  --callout-warning: var(--av-gold);
+  --callout-failure: #E53E3E;
+  --callout-danger: #E53E3E;
+  --callout-bug: #E53E3E;
+  --callout-example: var(--av-gold-light);
+  --callout-quote: var(--av-silver-muted);
+  /* --- Checkboxes --- */
+  --checkbox-color: var(--av-gold);
+  --checkbox-color-hover: var(--av-gold-light);
+  --checkbox-border-color: var(--av-purple-mid);
+  --checkbox-border-color-hover: var(--av-gold);
+  --checkbox-marker-color: var(--av-black);
+  /* --- Caret --- */
+  --caret-color: var(--av-gold);
+  /* --- Modals --- */
+  --modal-background: var(--av-purple-deep);
+  --modal-border-color: var(--av-purple-mid);
+  /* --- Graph view --- */
+  --graph-line: rgba(74, 30, 122, 0.6);
+  --graph-node: var(--av-gold);
+  --graph-node-unresolved: var(--av-silver-muted);
+  --graph-node-focused: var(--av-gold-light);
+  --graph-node-tag: var(--av-gold-light);
+  --graph-node-attachment: var(--av-silver);
+  --graph-text: var(--av-silver-light);
+  /* --- Workspace chrome --- */
+  --titlebar-background: var(--av-black);
+  --titlebar-background-focused: var(--av-black);
+  --titlebar-text-color: var(--av-silver-muted);
+  --titlebar-text-color-focused: var(--av-silver-light);
+  --ribbon-background: var(--av-black);
+  --ribbon-background-collapsed: var(--av-black);
+  --status-bar-background: var(--av-black);
+  --status-bar-text-color: var(--av-silver-muted);
+  --status-bar-border-color: rgba(74, 30, 122, 0.3);
+  --tab-background-active: var(--av-black);
+  --tab-text-color: var(--av-silver-muted);
+  --tab-text-color-focused: var(--av-silver-light);
+  --tab-text-color-focused-active: var(--av-gold);
+  --tab-text-color-focused-active-current: var(--av-gold);
+  --tab-outline-color: var(--av-purple-mid);
+  --tab-outline-width: 1px;
+  --tab-curve: 0px;
+  --tab-radius: 0px;
+  --tab-radius-active: 0px;
+  --file-folder-color: var(--av-silver-light);
+  --nav-item-color: var(--av-silver-light);
+  --nav-item-color-hover: var(--av-gold-light);
+  --nav-item-color-active: var(--av-gold);
+  --nav-item-background-hover: rgba(45, 18, 72, 0.6);
+  --nav-item-background-active: rgba(201, 168, 76, 0.10);
+  --nav-collapse-icon-color: var(--av-silver-muted);
+  --nav-collapse-icon-color-collapsed: var(--av-gold);
+  /* --- Custom theme tokens (consumed by partials) --- */
+  --heading-font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --heading-underline-color: rgba(201, 168, 76, 0.75);
+  --av-glow-opacity: 0.08;
+  --av-hex-opacity: 0.06;
+  --av-tag-dot-color: var(--av-gold);
+}
+
+/* --- Font family overrides (apply to both modes) --- */
+body {
+  --font-text-theme: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-interface-theme: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-monospace-theme: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+/* ============================================
+   Body typography
+   ============================================ */
+.theme-dark {
+  --font-text-size: 16px;
+  --line-height-normal: 1.6;
+  --line-height-tight: 1.3;
+}
+
+.theme-dark body {
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reading & live-preview text gets the body font + comfortable rhythm */
+.theme-dark .markdown-preview-view,
+.theme-dark .markdown-source-view.mod-cm6 .cm-line {
+  font-family: var(--font-text);
+  letter-spacing: -0.005em;
+}
+
+.theme-dark .markdown-preview-view p,
+.theme-dark .markdown-source-view.mod-cm6 .cm-line {
+  line-height: 1.65;
+}
+
+/* Selection wash */
+.theme-dark ::selection {
+  background: var(--text-selection);
+}
+
+/* ============================================
+   Headings — h1/h2 in Playfair (gold);
+              h3–h6 in Inter, descending weight.
+   ============================================ */
+.theme-dark {
+  /* Sizes (relative, scale ~1.25) */
+  --h1-size: 2.5em;
+  --h2-size: 1.9em;
+  --h3-size: 1.4em;
+  --h4-size: 1.15em;
+  --h5-size: 1em;
+  --h6-size: 0.9em;
+  --h1-weight: 700;
+  --h2-weight: 600;
+  --h3-weight: 600;
+  --h4-weight: 600;
+  --h5-weight: 500;
+  --h6-weight: 500;
+  --h1-color: var(--av-gold);
+  --h2-color: var(--av-gold);
+  --h3-color: var(--av-silver-light);
+  --h4-color: var(--av-silver-light);
+  --h5-color: var(--av-silver-light);
+  --h6-color: var(--av-silver-muted);
+  --h1-font: var(--heading-font-display);
+  --h2-font: var(--heading-font-display);
+  --h3-font: var(--font-text);
+  --h4-font: var(--font-text);
+  --h5-font: var(--font-text);
+  --h6-font: var(--font-text);
+  --h1-line-height: 1.15;
+  --h2-line-height: 1.2;
+  --h3-line-height: 1.3;
+  --h4-line-height: 1.35;
+  --h5-line-height: 1.4;
+  --h6-line-height: 1.4;
+}
+
+.theme-dark .markdown-preview-view h1,
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-header-1,
+.theme-dark .markdown-source-view.mod-cm6 .cm-header-1,
+.theme-dark .markdown-preview-view h2,
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-header-2,
+.theme-dark .markdown-source-view.mod-cm6 .cm-header-2 {
+  font-family: var(--heading-font-display);
+  font-style: normal;
+  letter-spacing: -0.01em;
+  color: var(--av-gold);
+}
+
+/* h2: gold underline rule, mirrors the AV wordmark */
+.theme-dark .markdown-preview-view h2 {
+  padding-bottom: 0.25em;
+  border-bottom: 0.75px solid var(--heading-underline-color);
+}
+
+/* h6 reads as a small-caps eyebrow label */
+.theme-dark .markdown-preview-view h6 {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--av-silver-muted);
+  font-weight: 600;
+}
+
+/* Heading hash markers in source mode — dim, gold on hover */
+.theme-dark .cm-formatting-header {
+  color: var(--av-silver-muted) !important;
+  opacity: 0.5;
+}
+
+.theme-dark .cm-active .cm-formatting-header {
+  opacity: 1;
+  color: var(--av-gold) !important;
+}
+
+/* ============================================
+   Links — gold, with a dotted underline on hover
+   ============================================ */
+.theme-dark a,
+.theme-dark .cm-link,
+.theme-dark .cm-hmd-internal-link,
+.theme-dark .internal-link,
+.theme-dark .external-link {
+  color: var(--av-gold);
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  border-bottom: 1px dotted transparent;
+}
+
+.theme-dark a:hover,
+.theme-dark .cm-link:hover,
+.theme-dark .cm-hmd-internal-link:hover,
+.theme-dark .internal-link:hover,
+.theme-dark .external-link:hover {
+  color: var(--av-gold-light);
+  border-bottom-color: var(--av-gold-light);
+}
+
+/* Unresolved internal links — dotted underline + muted color */
+.theme-dark .internal-link.is-unresolved,
+.theme-dark .cm-hmd-internal-link.cm-invalid-link {
+  color: var(--av-silver-muted);
+  border-bottom: 1px dotted var(--av-silver-muted);
+  opacity: 0.85;
+}
+
+.theme-dark .internal-link.is-unresolved:hover {
+  color: var(--av-gold);
+  border-bottom-color: var(--av-gold);
+  opacity: 1;
+}
+
+/* External link icon (the small arrow Obsidian appends) */
+.theme-dark .external-link {
+  background-image: none;
+  padding-right: 0;
+}
+
+.theme-dark .external-link::after {
+  content: " ↗";
+  font-size: 0.85em;
+  color: var(--av-gold);
+  margin-left: 0.15em;
+}
+
+.theme-dark .external-link:hover::after {
+  color: var(--av-gold-light);
+}
+
+/* ============================================
+   Tags — no pill background. Replaced with a
+   gold "principle marker" dot followed by the
+   tag name in gold. Mirrors .principle-marker
+   from the AV site.
+   ============================================ */
+.theme-dark a.tag,
+.theme-dark .cm-hashtag,
+.theme-dark .cm-tag-name {
+  background: var(--tag-background);
+  color: var(--av-tag-dot-color);
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: 0.92em;
+  letter-spacing: 0.01em;
+  padding: var(--tag-padding-y) var(--tag-padding-x);
+  border: none;
+  border-radius: var(--tag-radius);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+/* The gold dot marker — only on rendered tags in preview / pills.
+   We keep it off the editor-mode .cm-hashtag because it would
+   interfere with typing. */
+.theme-dark .markdown-preview-view a.tag::before,
+.theme-dark .tag-pane-tag .tag-pane-tag-text::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--av-tag-dot-color);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.theme-dark a.tag:hover,
+.theme-dark .cm-hashtag:hover {
+  background: var(--tag-background-hover);
+  color: var(--av-gold-light);
+}
+
+/* Tag pane (left sidebar) */
+.theme-dark .tag-pane-tag {
+  color: var(--av-silver-light);
+}
+
+.theme-dark .tag-pane-tag-count {
+  color: var(--av-silver-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hash glyph in editor — dimmed, gold on active line */
+.theme-dark .cm-formatting-hashtag {
+  color: var(--av-silver-muted) !important;
+  opacity: 0.6;
+}
+
+.theme-dark .cm-active .cm-formatting-hashtag {
+  color: var(--av-gold) !important;
+  opacity: 1;
+}
+
+/* ============================================
+   Callouts — purple surface, 3px gold left rule,
+   gold title, gold-tinted icon. No rounded corners
+   on the rule edge.
+   ============================================ */
+.theme-dark .callout {
+  background: var(--av-purple-deep);
+  border: none;
+  border-left: 3px solid var(--callout-color, var(--av-gold));
+  border-radius: 0 var(--radius-m) var(--radius-m) 0;
+  padding: 0.9em 1.1em 0.9em 1em;
+  margin: 1em 0;
+  mix-blend-mode: normal;
+}
+
+.theme-dark .callout-title {
+  padding: 0 0 0.35em 0;
+  background: transparent;
+  color: var(--callout-color, var(--av-gold));
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 0.95em;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.theme-dark .callout-title-inner {
+  color: inherit;
+  font-weight: 600;
+}
+
+.theme-dark .callout-icon {
+  color: var(--callout-color, var(--av-gold));
+  opacity: 0.95;
+}
+
+.theme-dark .callout-icon svg {
+  stroke-width: 2px;
+}
+
+.theme-dark .callout-content {
+  color: var(--av-silver-light);
+  padding: 0;
+}
+
+.theme-dark .callout-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Foldable callouts — gold chevron */
+.theme-dark .callout-fold {
+  color: var(--av-gold);
+  opacity: 0.7;
+}
+
+.theme-dark .callout-fold:hover {
+  opacity: 1;
+}
+
+/* Per-type accent (left rule + title color), via Obsidian's --callout-color */
+.theme-dark .callout[data-callout=note] {
+  --callout-color: var(--av-gold);
+}
+
+.theme-dark .callout[data-callout=info] {
+  --callout-color: var(--av-gold-light);
+}
+
+.theme-dark .callout[data-callout=tip],
+.theme-dark .callout[data-callout=hint],
+.theme-dark .callout[data-callout=important] {
+  --callout-color: var(--av-gold);
+}
+
+.theme-dark .callout[data-callout=success],
+.theme-dark .callout[data-callout=check],
+.theme-dark .callout[data-callout=done] {
+  --callout-color: #38A169;
+}
+
+.theme-dark .callout[data-callout=question],
+.theme-dark .callout[data-callout=help],
+.theme-dark .callout[data-callout=faq] {
+  --callout-color: var(--av-gold-light);
+}
+
+.theme-dark .callout[data-callout=warning],
+.theme-dark .callout[data-callout=caution],
+.theme-dark .callout[data-callout=attention] {
+  --callout-color: var(--av-gold);
+}
+
+.theme-dark .callout[data-callout=failure],
+.theme-dark .callout[data-callout=fail],
+.theme-dark .callout[data-callout=missing],
+.theme-dark .callout[data-callout=danger],
+.theme-dark .callout[data-callout=error],
+.theme-dark .callout[data-callout=bug] {
+  --callout-color: #E53E3E;
+}
+
+.theme-dark .callout[data-callout=example] {
+  --callout-color: var(--av-gold-light);
+}
+
+.theme-dark .callout[data-callout=quote],
+.theme-dark .callout[data-callout=cite] {
+  --callout-color: var(--av-silver-muted);
+}
+
+/* ============================================
+   Blockquote — gold left rule, silver italic
+   ============================================ */
+.theme-dark .markdown-preview-view blockquote,
+.theme-dark .markdown-source-view blockquote,
+.theme-dark .HyperMD-quote {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--av-gold);
+  padding: 0.25em 0 0.25em 1em;
+  margin: 0.75em 0;
+  color: var(--av-silver-light);
+  font-style: italic;
+  font-family: var(--font-text);
+}
+
+.theme-dark blockquote > p {
+  margin-bottom: 0.5em;
+}
+
+.theme-dark blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+/* Cite / em inside a quote → gold */
+.theme-dark blockquote em,
+.theme-dark blockquote cite {
+  color: var(--av-gold);
+  font-style: normal;
+}
+
+/* ============================================
+   Code — JetBrains Mono on a deeper purple
+   surface; gold for keywords, gold-light for
+   strings.
+   ============================================ */
+/* Inline code — gold text on a subtle purple tint */
+.theme-dark code,
+.theme-dark .cm-inline-code,
+.theme-dark :not(pre) > code {
+  background: rgba(74, 30, 122, 0.25);
+  color: var(--av-gold);
+  font-family: var(--font-monospace);
+  font-size: 0.88em;
+  padding: 0.12em 0.4em;
+  border-radius: var(--radius-s);
+  border: 1px solid rgba(74, 30, 122, 0.4);
+}
+
+/* Code blocks */
+.theme-dark pre,
+.theme-dark .markdown-source-view .HyperMD-codeblock,
+.theme-dark .markdown-rendered pre code {
+  background: var(--code-background);
+  color: var(--av-silver-light);
+  font-family: var(--font-monospace);
+  border-radius: var(--radius-m);
+  border: 1px solid rgba(74, 30, 122, 0.4);
+}
+
+.theme-dark .markdown-rendered pre {
+  padding: 0.85em 1em;
+}
+
+.theme-dark .markdown-rendered pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 0.88em;
+  line-height: 1.55;
+}
+
+/* Source-mode code lines — flat purple-deep background per line, gold gutter rule */
+.theme-dark .markdown-source-view .HyperMD-codeblock {
+  font-size: 0.88em;
+  line-height: 1.55;
+  border-radius: 0;
+  border-left: 2px solid rgba(201, 168, 76, 0.4);
+  border-right: none;
+}
+
+.theme-dark .markdown-source-view .HyperMD-codeblock-begin,
+.theme-dark .markdown-source-view .HyperMD-codeblock-begin-bg {
+  border-radius: var(--radius-m) var(--radius-m) 0 0;
+}
+
+.theme-dark .markdown-source-view .HyperMD-codeblock-end,
+.theme-dark .markdown-source-view .HyperMD-codeblock-end-bg {
+  border-radius: 0 0 var(--radius-m) var(--radius-m);
+}
+
+/* Code-fence backticks ``` — dimmed */
+.theme-dark .cm-formatting-code-block {
+  color: var(--av-silver-muted) !important;
+  opacity: 0.6;
+}
+
+/* Prism / Obsidian syntax token colors (reading mode) */
+.theme-dark .markdown-rendered .token.keyword,
+.theme-dark .markdown-rendered .token.tag,
+.theme-dark .markdown-rendered .token.selector,
+.theme-dark .markdown-rendered .token.important {
+  color: var(--av-gold);
+}
+
+.theme-dark .markdown-rendered .token.string,
+.theme-dark .markdown-rendered .token.attr-value,
+.theme-dark .markdown-rendered .token.regex {
+  color: var(--av-gold-light);
+}
+
+.theme-dark .markdown-rendered .token.function,
+.theme-dark .markdown-rendered .token.class-name {
+  color: var(--av-gold-light);
+}
+
+.theme-dark .markdown-rendered .token.comment,
+.theme-dark .markdown-rendered .token.prolog,
+.theme-dark .markdown-rendered .token.doctype,
+.theme-dark .markdown-rendered .token.cdata {
+  color: var(--av-silver-muted);
+  font-style: italic;
+}
+
+.theme-dark .markdown-rendered .token.number,
+.theme-dark .markdown-rendered .token.boolean,
+.theme-dark .markdown-rendered .token.constant {
+  color: var(--av-gold);
+}
+
+.theme-dark .markdown-rendered .token.operator,
+.theme-dark .markdown-rendered .token.punctuation {
+  color: var(--av-silver);
+}
+
+.theme-dark .markdown-rendered .token.variable,
+.theme-dark .markdown-rendered .token.property {
+  color: var(--av-silver-light);
+}
+
+/* Editor (CodeMirror) syntax — mirror the same palette */
+.theme-dark .cm-keyword,
+.theme-dark .cm-tag,
+.theme-dark .cm-builtin {
+  color: var(--av-gold) !important;
+}
+
+.theme-dark .cm-string,
+.theme-dark .cm-string-2,
+.theme-dark .cm-attribute {
+  color: var(--av-gold-light) !important;
+}
+
+.theme-dark .cm-comment {
+  color: var(--av-silver-muted) !important;
+  font-style: italic;
+}
+
+.theme-dark .cm-number,
+.theme-dark .cm-atom {
+  color: var(--av-gold) !important;
+}
+
+.theme-dark .cm-def,
+.theme-dark .cm-variable-2 {
+  color: var(--av-silver-light) !important;
+}
+
+.theme-dark .cm-property {
+  color: var(--av-gold-light) !important;
+}
+
+.theme-dark .cm-operator {
+  color: var(--av-silver) !important;
+}
+
+.theme-dark .cm-meta {
+  color: var(--av-silver-muted) !important;
+}
+
+/* ============================================
+   Tables — purple header row, hairline gold
+   border, alt-row purple wash, tabular nums.
+   ============================================ */
+.theme-dark .markdown-preview-view table,
+.theme-dark .markdown-rendered table {
+  border-collapse: collapse;
+  border: 1px solid rgba(74, 30, 122, 0.5);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  font-family: var(--font-text);
+  font-size: 0.95em;
+  font-variant-numeric: tabular-nums;
+  margin: 1em 0;
+}
+
+.theme-dark .markdown-rendered thead {
+  background: var(--av-purple-dark);
+  border-bottom: 1px solid var(--av-gold);
+}
+
+.theme-dark .markdown-rendered th {
+  color: var(--av-gold);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.78em;
+  padding: 0.6em 0.9em;
+  text-align: left;
+  border: none;
+}
+
+.theme-dark .markdown-rendered td {
+  color: var(--av-silver-light);
+  padding: 0.55em 0.9em;
+  border: none;
+  border-top: 1px solid rgba(74, 30, 122, 0.3);
+}
+
+.theme-dark .markdown-rendered tbody tr:nth-child(even) {
+  background: rgba(45, 18, 72, 0.25);
+}
+
+.theme-dark .markdown-rendered tbody tr:hover {
+  background: rgba(201, 168, 76, 0.06);
+}
+
+/* ============================================
+   Checklists — gold square checkbox, dim completed
+   ============================================ */
+.theme-dark input[type=checkbox] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: transparent;
+  border: 1.5px solid var(--av-purple-mid);
+  border-radius: var(--radius-s);
+  position: relative;
+  vertical-align: middle;
+  margin: 0 0.4em 0.15em 0;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.theme-dark input[type=checkbox]:hover {
+  border-color: var(--av-gold);
+}
+
+.theme-dark input[type=checkbox]:checked {
+  background: var(--av-gold);
+  border-color: var(--av-gold);
+}
+
+.theme-dark input[type=checkbox]:checked::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--av-black);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Completed task — dim the text */
+.theme-dark .markdown-rendered ul > li.task-list-item.is-checked,
+.theme-dark .markdown-source-view .task-list-item.is-checked {
+  color: var(--av-silver-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--av-silver-muted);
+  text-decoration-thickness: 0.5px;
+}
+
+/* ============================================
+   Sidebars — flat, no inner shadow, hairline
+   purple divider against the workspace.
+   ============================================ */
+.theme-dark .workspace-split.mod-left-split,
+.theme-dark .workspace-split.mod-right-split,
+.theme-dark .workspace-sidedock-vault-profile,
+.theme-dark .workspace-drawer {
+  background: var(--background-primary-alt);
+  box-shadow: none;
+  border-right: 1px solid var(--divider-color);
+}
+
+.theme-dark .workspace-split.mod-right-split {
+  border-right: none;
+  border-left: 1px solid var(--divider-color);
+}
+
+/* Pane headers (Files / Search / Outline titles) */
+.theme-dark .nav-header,
+.theme-dark .workspace-leaf-header,
+.theme-dark .view-header {
+  background: transparent;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.theme-dark .view-header-title {
+  color: var(--av-silver-light);
+  font-family: var(--font-text);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.theme-dark .view-header-icon {
+  color: var(--av-silver-muted);
+}
+
+.theme-dark .view-header-icon:hover {
+  color: var(--av-gold);
+}
+
+/* Outline / search nav-action buttons */
+.theme-dark .nav-action-button {
+  color: var(--av-silver-muted);
+}
+
+.theme-dark .nav-action-button:hover {
+  color: var(--av-gold);
+}
+
+.theme-dark .nav-action-button.is-active {
+  color: var(--av-gold);
+}
+
+/* ============================================
+   Ribbon (leftmost icon strip) — gold accent
+   on hover, gold dot for active item.
+   ============================================ */
+.theme-dark .workspace-ribbon {
+  background: var(--ribbon-background);
+  border-right: 1px solid var(--divider-color);
+}
+
+.theme-dark .side-dock-ribbon-action,
+.theme-dark .workspace-ribbon .clickable-icon {
+  color: var(--av-silver-muted);
+  border-radius: var(--radius-s);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.theme-dark .side-dock-ribbon-action:hover,
+.theme-dark .workspace-ribbon .clickable-icon:hover {
+  color: var(--av-gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.theme-dark .side-dock-ribbon-action.is-active,
+.theme-dark .workspace-ribbon .clickable-icon.is-active {
+  color: var(--av-gold);
+  position: relative;
+}
+
+/* Active item gets a small gold "principle marker" dot on its right edge */
+.theme-dark .side-dock-ribbon-action.is-active::after {
+  content: "";
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--av-gold);
+}
+
+/* ============================================
+   Tabs — flat (no chrome rounding), gold
+   underline on the active tab.
+   ============================================ */
+.theme-dark .workspace-tab-header-container {
+  background: var(--av-black);
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.theme-dark .workspace-tab-header {
+  background: transparent;
+  border-radius: 0 !important;
+  border: none;
+  box-shadow: none;
+  position: relative;
+}
+
+.theme-dark .workspace-tab-header-inner {
+  padding: 0.45em 0.8em;
+}
+
+.theme-dark .workspace-tab-header-inner-title {
+  color: var(--av-silver-muted);
+  font-family: var(--font-text);
+  font-size: 0.88em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.theme-dark .workspace-tab-header:hover .workspace-tab-header-inner-title {
+  color: var(--av-silver-light);
+}
+
+/* Active tab — gold underline + lifted text color */
+.theme-dark .workspace-tab-header.is-active {
+  background: var(--av-black);
+}
+
+.theme-dark .workspace-tab-header.is-active .workspace-tab-header-inner-title {
+  color: var(--av-gold);
+}
+
+.theme-dark .workspace-tab-header.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--av-gold);
+}
+
+/* Tab close icon */
+.theme-dark .workspace-tab-header-inner-close-button {
+  color: var(--av-silver-muted);
+}
+
+.theme-dark .workspace-tab-header-inner-close-button:hover {
+  color: var(--av-gold-light);
+  background: rgba(201, 168, 76, 0.1);
+}
+
+/* ============================================
+   Status bar — silver-muted text, hairline gold
+   separators between segments.
+   ============================================ */
+.theme-dark .status-bar {
+  background: var(--status-bar-background);
+  border-top: 1px solid var(--status-bar-border-color);
+  color: var(--av-silver-muted);
+  font-family: var(--font-text);
+  font-size: 0.75em;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.theme-dark .status-bar-item {
+  color: var(--av-silver-muted);
+  padding: 0 0.7em;
+  border-left: 1px solid rgba(74, 30, 122, 0.4);
+}
+
+.theme-dark .status-bar-item:first-child {
+  border-left: none;
+}
+
+.theme-dark .status-bar-item:hover {
+  color: var(--av-gold);
+}
+
+/* ============================================
+   File explorer — tighter line height, gold
+   folder caret, gold "principle marker" dot
+   for the active file.
+   ============================================ */
+.theme-dark .nav-files-container,
+.theme-dark .nav-folder,
+.theme-dark .nav-file {
+  font-family: var(--font-text);
+}
+
+.theme-dark .nav-file-title,
+.theme-dark .nav-folder-title {
+  padding: 3px 8px;
+  border-radius: var(--radius-s);
+  color: var(--nav-item-color);
+  line-height: 1.4;
+  font-size: 0.92em;
+  position: relative;
+}
+
+.theme-dark .nav-file-title:hover,
+.theme-dark .nav-folder-title:hover {
+  background: var(--nav-item-background-hover);
+  color: var(--av-gold-light);
+}
+
+/* Active file — gold text + gold dot on left */
+.theme-dark .nav-file-title.is-active,
+.theme-dark .nav-file.is-active > .nav-file-title {
+  background: var(--nav-item-background-active);
+  color: var(--av-gold);
+}
+
+.theme-dark .nav-file-title.is-active::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--av-gold);
+}
+
+/* Folder caret (collapse arrow) */
+.theme-dark .nav-folder-collapse-indicator,
+.theme-dark .collapse-icon {
+  color: var(--av-silver-muted);
+  transition: color 0.15s ease;
+}
+
+.theme-dark .nav-folder:hover .nav-folder-collapse-indicator {
+  color: var(--av-gold);
+}
+
+/* Folder title — heavier */
+.theme-dark .nav-folder-title-content {
+  font-weight: 500;
+  color: var(--av-silver-light);
+}
+
+/* File extension hint (markdown / pdf etc.) */
+.theme-dark .nav-file-tag {
+  color: var(--av-silver-muted);
+  background: transparent;
+  border: 1px solid rgba(74, 30, 122, 0.5);
+  border-radius: var(--radius-s);
+  font-size: 0.7em;
+  padding: 0 0.35em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   Graph view — gold nodes, purple-mid lines,
+   deep black canvas. Local graph picks up the
+   same palette.
+   ============================================ */
+.theme-dark .graph-view.color-fill {
+  color: var(--av-gold);
+}
+
+.theme-dark .graph-view.color-fill-tag {
+  color: var(--av-gold-light);
+}
+
+.theme-dark .graph-view.color-fill-attachment {
+  color: var(--av-silver);
+}
+
+.theme-dark .graph-view.color-fill-unresolved {
+  color: var(--av-silver-muted);
+}
+
+.theme-dark .graph-view.color-line {
+  color: rgba(74, 30, 122, 0.55);
+}
+
+.theme-dark .graph-view.color-text {
+  color: var(--av-silver-light);
+}
+
+.theme-dark .graph-view.color-fill-focused {
+  color: var(--av-gold-light);
+}
+
+.theme-dark .graph-view.color-circle {
+  color: var(--av-gold);
+}
+
+/* The graph canvas background */
+.theme-dark .view-content > .graph-view,
+.theme-dark .workspace-leaf-content[data-type=graph] .view-content {
+  background: var(--av-black);
+}
+
+/* Graph control buttons (filter / display / forces panels) */
+.theme-dark .graph-controls {
+  background: var(--av-purple-deep);
+  border: 1px solid var(--divider-color);
+  border-radius: var(--radius-m);
+}
+
+.theme-dark .graph-controls .tree-item-self:hover {
+  background: var(--nav-item-background-hover);
+  color: var(--av-gold-light);
+}
+
+/* ============================================
+   Hex watermark — synthesized from the AV logo
+   geometry. Hexagon with a six-spoke spiderweb
+   interior, rendered at 6% opacity in purple-mid
+   on empty workspace surfaces (new tab, empty
+   pane).
+   ============================================ */
+/* Single inlined SVG, URL-encoded so it works in url("data:image/svg+xml,...") */
+/* stroke=#4A1E7A purple-mid; opacity controlled by --av-hex-opacity on parent */
+.theme-dark .empty-state,
+.theme-dark .workspace-leaf-content[data-type=empty] {
+  background-color: var(--background-primary);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%234A1E7A' stroke-width='1'><polygon points='100,18 168,58 168,142 100,182 32,142 32,58'/><polygon points='100,40 150,68 150,132 100,160 50,132 50,68'/><line x1='100' y1='100' x2='100' y2='18'/><line x1='100' y1='100' x2='168' y2='58'/><line x1='100' y1='100' x2='168' y2='142'/><line x1='100' y1='100' x2='100' y2='182'/><line x1='100' y1='100' x2='32' y2='142'/><line x1='100' y1='100' x2='32' y2='58'/><circle cx='100' cy='100' r='3' fill='%23C9A84C' stroke='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center 35%;
+  background-size: 380px 380px;
+  opacity: 1;
+}
+
+/* Reduce contrast of the SVG itself by layering a translucent overlay
+   sized to match. We use a separate ::before so the SVG keeps its
+   crispness regardless of opacity tweaks. */
+.theme-dark .empty-state > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dim via CSS variable (Style Settings can toggle this) */
+.theme-dark .empty-state {
+  background-blend-mode: normal;
+}
+
+.theme-dark .empty-state::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--background-primary);
+  opacity: calc(1 - var(--av-hex-opacity));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.theme-dark .empty-state-title,
+.theme-dark .empty-state-action {
+  color: var(--av-silver-muted);
+  font-family: var(--font-text);
+}
+
+.theme-dark .empty-state-action:hover {
+  color: var(--av-gold);
+}
+
+/* ============================================
+   Gold glow — single radial gradient anchored
+   top-right of the workspace, echoing the AV
+   site hero's .hero-accent.
+   ============================================ */
+.theme-dark .workspace {
+  position: relative;
+}
+
+.theme-dark .workspace::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle at 85% 8%, rgba(201, 168, 76, var(--av-glow-opacity)) 0%, transparent 45%);
+}
+
+/* Keep all real workspace content above the glow */
+.theme-dark .workspace > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   Style Settings plugin integration
+   https://github.com/mgmeyers/obsidian-style-settings
+   The YAML block below is parsed by the plugin
+   and surfaces as toggles / pickers in the
+   Settings → Style Settings → Ventures pane.
+   ============================================ */
+/* @settings
+
+name: Ventures
+id: ventures-theme
+settings:
+  -
+    id: ventures-accent-intensity
+    title: Accent intensity
+    description: How loud the gold should be.
+    type: class-select
+    default: ventures-accent-bold
+    allowEmpty: false
+    options:
+      -
+        label: Bold (default)
+        value: ventures-accent-bold
+      -
+        label: Subtle
+        value: ventures-accent-subtle
+      -
+        label: Punch
+        value: ventures-accent-punch
+  -
+    id: ventures-heading-font
+    title: Heading font
+    description: Display family used for h1 and h2.
+    type: class-select
+    default: ventures-heading-playfair
+    allowEmpty: false
+    options:
+      -
+        label: Playfair Display (default)
+        value: ventures-heading-playfair
+      -
+        label: Inter (sans)
+        value: ventures-heading-inter
+  -
+    id: ventures-hex-watermark
+    title: Hex watermark on empty panes
+    description: Show the hexagon spiderweb mark on new-tab and empty-pane backgrounds.
+    type: class-toggle
+    default: true
+  -
+    id: ventures-gold-glow
+    title: Gold glow accent
+    description: Subtle radial gold gradient anchored top-right of the workspace.
+    type: class-toggle
+    default: true
+  -
+    id: ventures-tag-dot-color
+    title: Tag dot color
+    description: The "principle marker" dot rendered before each tag.
+    type: variable-color
+    format: hex
+    default: '#C9A84C'
+  -
+    id: ventures-compact-density
+    title: Compact density
+    description: Tightens line-height and paddings ~15% across the editor and lists.
+    type: class-toggle
+    default: false
+*/
+/* --- Accent intensity variants --- */
+.theme-dark.ventures-accent-subtle {
+  --av-gold: #B59643;
+  --av-gold-light: #D4B566;
+  --interactive-accent: var(--av-gold);
+  --text-accent: var(--av-gold);
+  --link-color: var(--av-gold);
+}
+
+.theme-dark.ventures-accent-punch {
+  --av-gold: #E8C97A;
+  --av-gold-light: #F5DD96;
+  --interactive-accent: var(--av-gold);
+  --text-accent: var(--av-gold);
+  --link-color: var(--av-gold);
+}
+
+/* --- Heading font variant --- */
+.theme-dark.ventures-heading-inter {
+  --heading-font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.theme-dark.ventures-heading-inter .markdown-preview-view h1,
+.theme-dark.ventures-heading-inter .markdown-preview-view h2 {
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* --- Hex watermark toggle --- */
+.theme-dark:not(.ventures-hex-watermark) .empty-state {
+  background-image: none;
+}
+
+.theme-dark:not(.ventures-hex-watermark) .empty-state::after {
+  display: none;
+}
+
+/* --- Gold glow toggle --- */
+.theme-dark:not(.ventures-gold-glow) .workspace::before {
+  display: none;
+}
+
+/* --- Compact density --- */
+.theme-dark.ventures-compact-density {
+  --line-height-normal: 1.45;
+  --font-text-size: 15px;
+}
+
+.theme-dark.ventures-compact-density .nav-file-title,
+.theme-dark.ventures-compact-density .nav-folder-title {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.theme-dark.ventures-compact-density .markdown-preview-view p,
+.theme-dark.ventures-compact-density .markdown-source-view.mod-cm6 .cm-line {
+  line-height: 1.5;
+}

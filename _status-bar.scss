@@ -1,0 +1,28 @@
+/* ============================================
+   Status bar — silver-muted text, hairline gold
+   separators between segments.
+   ============================================ */
+
+.theme-dark .status-bar {
+  background: var(--status-bar-background);
+  border-top: 1px solid var(--status-bar-border-color);
+  color: var(--av-silver-muted);
+  font-family: var(--font-text);
+  font-size: 0.75em;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.theme-dark .status-bar-item {
+  color: var(--av-silver-muted);
+  padding: 0 0.7em;
+  border-left: 1px solid rgba(74, 30, 122, 0.4);
+}
+
+.theme-dark .status-bar-item:first-child {
+  border-left: none;
+}
+
+.theme-dark .status-bar-item:hover {
+  color: var(--av-gold);
+}

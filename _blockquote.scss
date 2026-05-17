@@ -1,0 +1,30 @@
+/* ============================================
+   Blockquote — gold left rule, silver italic
+   ============================================ */
+
+.theme-dark .markdown-preview-view blockquote,
+.theme-dark .markdown-source-view blockquote,
+.theme-dark .HyperMD-quote {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--av-gold);
+  padding: 0.25em 0 0.25em 1em;
+  margin: 0.75em 0;
+  color: var(--av-silver-light);
+  font-style: italic;
+  font-family: var(--font-text);
+}
+
+.theme-dark blockquote > p {
+  margin-bottom: 0.5em;
+}
+.theme-dark blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+/* Cite / em inside a quote → gold */
+.theme-dark blockquote em,
+.theme-dark blockquote cite {
+  color: var(--av-gold);
+  font-style: normal;
+}

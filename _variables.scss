@@ -1,0 +1,213 @@
+/* ============================================
+   Design tokens
+   Lifted from armando-ventures-site/styles.css.
+   Scoped under .theme-dark so light mode falls
+   through to Obsidian defaults.
+   ============================================ */
+
+.theme-dark {
+  /* --- Brand palette (raw) --- */
+  --av-black:          #0D0515;
+  --av-purple-deep:    #1E0A2E;
+  --av-purple-dark:    #2D1248;
+  --av-purple-mid:     #4A1E7A;
+  --av-gold:           #C9A84C;
+  --av-gold-light:     #E8C97A;
+  --av-gold-dark:      #8B6914;
+  --av-silver:         #C0C0C0;
+  --av-silver-light:   #E8E8E8;
+  --av-silver-muted:   #7A7A8C;
+  --av-white:          #FFFFFF;
+
+  /* --- Backgrounds --- */
+  --background-primary:           var(--av-black);
+  --background-primary-alt:       #160828;
+  --background-secondary:         var(--av-purple-deep);
+  --background-secondary-alt:     var(--av-purple-dark);
+
+  --background-modifier-border:        var(--av-purple-mid);
+  --background-modifier-border-hover:  var(--av-gold);
+  --background-modifier-border-focus:  var(--av-gold);
+  --background-modifier-hover:         rgba(45, 18, 72, 0.6);
+  --background-modifier-active-hover:  rgba(201, 168, 76, 0.12);
+  --background-modifier-form-field:    var(--av-purple-deep);
+  --background-modifier-form-field-highlighted: var(--av-purple-dark);
+
+  --background-modifier-success:       rgba(56, 161, 105, 0.20);
+  --background-modifier-error:         rgba(229, 62, 62, 0.20);
+  --background-modifier-error-rgb:     229, 62, 62;
+  --background-modifier-error-hover:   rgba(229, 62, 62, 0.30);
+  --background-modifier-cover:         rgba(13, 5, 21, 0.85);
+
+  /* --- Text --- */
+  --text-normal:     var(--av-silver-light);
+  --text-muted:      #A8A8B8;
+  --text-faint:      var(--av-silver-muted);
+  --text-on-accent:  var(--av-black);
+  --text-error:      #E53E3E;
+  --text-success:    #38A169;
+  --text-warning:    var(--av-gold-light);
+
+  --text-accent:        var(--av-gold);
+  --text-accent-hover:  var(--av-gold-light);
+  --text-selection:     rgba(201, 168, 76, 0.22);
+  --text-highlight-bg:  rgba(201, 168, 76, 0.28);
+
+  /* --- Interactive accents --- */
+  --interactive-normal:         var(--av-purple-dark);
+  --interactive-hover:          var(--av-purple-mid);
+  --interactive-accent:         var(--av-gold);
+  --interactive-accent-hover:   var(--av-gold-light);
+  --interactive-accent-rgb:     201, 168, 76;
+
+  /* --- Links --- */
+  --link-color:                 var(--av-gold);
+  --link-color-hover:           var(--av-gold-light);
+  --link-external-color:        var(--av-gold);
+  --link-external-color-hover:  var(--av-gold-light);
+  --link-unresolved-color:      var(--av-silver-muted);
+  --link-unresolved-opacity:    0.7;
+  --link-unresolved-filter:     none;
+  --link-unresolved-decoration-style: dotted;
+
+  /* --- Borders & dividers --- */
+  --divider-color:        rgba(74, 30, 122, 0.4);
+  --divider-color-hover:  var(--av-gold);
+  --border-width:         1px;
+
+  /* --- Radii (sharp, matches site's 4px convention) --- */
+  --radius-s:   2px;
+  --radius-m:   4px;
+  --radius-l:   6px;
+  --radius-xl:  8px;
+
+  /* --- Shadows (flat — site uses none) --- */
+  --shadow-s:        none;
+  --shadow-m:        none;
+  --shadow-l:        none;
+  --input-shadow:    none;
+  --input-shadow-hover: none;
+
+  /* --- Scrollbars --- */
+  --scrollbar-bg:               transparent;
+  --scrollbar-thumb-bg:         rgba(74, 30, 122, 0.5);
+  --scrollbar-active-thumb-bg:  var(--av-gold);
+
+  /* --- Code --- */
+  --code-background:  #160628;
+  --code-normal:      var(--av-silver-light);
+  --code-comment:     var(--av-silver-muted);
+  --code-keyword:     var(--av-gold);
+  --code-function:    var(--av-gold-light);
+  --code-string:      #E8C97A;
+  --code-value:       #C0C0C0;
+  --code-tag:         var(--av-gold);
+  --code-property:    var(--av-gold-light);
+  --code-operator:    var(--av-silver);
+  --code-punctuation: var(--av-silver-muted);
+  --code-attribute:   var(--av-gold);
+  --code-class:       var(--av-gold-light);
+  --code-constant:    var(--av-gold);
+  --code-variable:    var(--av-silver-light);
+  --code-important:   #E53E3E;
+
+  /* --- Tags --- */
+  --tag-color:         var(--av-gold);
+  --tag-color-hover:   var(--av-gold-light);
+  --tag-background:    transparent;
+  --tag-background-hover: rgba(201, 168, 76, 0.10);
+  --tag-border-color:  transparent;
+  --tag-padding-x:     0.35em;
+  --tag-padding-y:     0.05em;
+  --tag-radius:        2px;
+  --tag-weight:        500;
+
+  /* --- Callouts --- */
+  --callout-border-width:   0px;
+  --callout-border-opacity: 0;
+  --callout-padding:        var(--size-4-3) var(--size-4-4);
+  --callout-radius:         var(--radius-m);
+  --callout-blend-mode:     normal;
+
+  --callout-default:   var(--av-gold);
+  --callout-info:      var(--av-gold-light);
+  --callout-tip:       var(--av-gold);
+  --callout-success:   #38A169;
+  --callout-question:  var(--av-gold-light);
+  --callout-warning:   var(--av-gold);
+  --callout-failure:   #E53E3E;
+  --callout-danger:    #E53E3E;
+  --callout-bug:       #E53E3E;
+  --callout-example:   var(--av-gold-light);
+  --callout-quote:     var(--av-silver-muted);
+
+  /* --- Checkboxes --- */
+  --checkbox-color:           var(--av-gold);
+  --checkbox-color-hover:     var(--av-gold-light);
+  --checkbox-border-color:    var(--av-purple-mid);
+  --checkbox-border-color-hover: var(--av-gold);
+  --checkbox-marker-color:    var(--av-black);
+
+  /* --- Caret --- */
+  --caret-color: var(--av-gold);
+
+  /* --- Modals --- */
+  --modal-background:    var(--av-purple-deep);
+  --modal-border-color:  var(--av-purple-mid);
+
+  /* --- Graph view --- */
+  --graph-line:       rgba(74, 30, 122, 0.6);
+  --graph-node:       var(--av-gold);
+  --graph-node-unresolved: var(--av-silver-muted);
+  --graph-node-focused: var(--av-gold-light);
+  --graph-node-tag:   var(--av-gold-light);
+  --graph-node-attachment: var(--av-silver);
+  --graph-text:       var(--av-silver-light);
+
+  /* --- Workspace chrome --- */
+  --titlebar-background:          var(--av-black);
+  --titlebar-background-focused:  var(--av-black);
+  --titlebar-text-color:          var(--av-silver-muted);
+  --titlebar-text-color-focused:  var(--av-silver-light);
+
+  --ribbon-background:        var(--av-black);
+  --ribbon-background-collapsed: var(--av-black);
+
+  --status-bar-background:    var(--av-black);
+  --status-bar-text-color:    var(--av-silver-muted);
+  --status-bar-border-color:  rgba(74, 30, 122, 0.3);
+
+  --tab-background-active:    var(--av-black);
+  --tab-text-color:           var(--av-silver-muted);
+  --tab-text-color-focused:   var(--av-silver-light);
+  --tab-text-color-focused-active: var(--av-gold);
+  --tab-text-color-focused-active-current: var(--av-gold);
+  --tab-outline-color:        var(--av-purple-mid);
+  --tab-outline-width:        1px;
+  --tab-curve:                0px;
+  --tab-radius:               0px;
+  --tab-radius-active:        0px;
+
+  --file-folder-color:   var(--av-silver-light);
+  --nav-item-color:      var(--av-silver-light);
+  --nav-item-color-hover: var(--av-gold-light);
+  --nav-item-color-active: var(--av-gold);
+  --nav-item-background-hover: rgba(45, 18, 72, 0.6);
+  --nav-item-background-active: rgba(201, 168, 76, 0.10);
+  --nav-collapse-icon-color: var(--av-silver-muted);
+  --nav-collapse-icon-color-collapsed: var(--av-gold);
+
+  /* --- Custom theme tokens (consumed by partials) --- */
+  --heading-font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --heading-underline-color: rgba(201, 168, 76, 0.75);
+  --av-glow-opacity: 0.08;
+  --av-hex-opacity: 0.06;
+  --av-tag-dot-color: var(--av-gold);
+}
+
+/* --- Font family overrides (apply to both modes) --- */
+body {
+  --font-text-theme:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-interface-theme: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-monospace-theme: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}

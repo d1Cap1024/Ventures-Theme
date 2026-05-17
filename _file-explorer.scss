@@ -1,0 +1,74 @@
+/* ============================================
+   File explorer — tighter line height, gold
+   folder caret, gold "principle marker" dot
+   for the active file.
+   ============================================ */
+
+.theme-dark .nav-files-container,
+.theme-dark .nav-folder,
+.theme-dark .nav-file {
+  font-family: var(--font-text);
+}
+
+.theme-dark .nav-file-title,
+.theme-dark .nav-folder-title {
+  padding: 3px 8px;
+  border-radius: var(--radius-s);
+  color: var(--nav-item-color);
+  line-height: 1.4;
+  font-size: 0.92em;
+  position: relative;
+}
+
+.theme-dark .nav-file-title:hover,
+.theme-dark .nav-folder-title:hover {
+  background: var(--nav-item-background-hover);
+  color: var(--av-gold-light);
+}
+
+/* Active file — gold text + gold dot on left */
+.theme-dark .nav-file-title.is-active,
+.theme-dark .nav-file.is-active > .nav-file-title {
+  background: var(--nav-item-background-active);
+  color: var(--av-gold);
+}
+
+.theme-dark .nav-file-title.is-active::before {
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--av-gold);
+}
+
+/* Folder caret (collapse arrow) */
+.theme-dark .nav-folder-collapse-indicator,
+.theme-dark .collapse-icon {
+  color: var(--av-silver-muted);
+  transition: color 0.15s ease;
+}
+.theme-dark .nav-folder:hover .nav-folder-collapse-indicator {
+  color: var(--av-gold);
+}
+
+/* Folder title — heavier */
+.theme-dark .nav-folder-title-content {
+  font-weight: 500;
+  color: var(--av-silver-light);
+}
+
+/* File extension hint (markdown / pdf etc.) */
+.theme-dark .nav-file-tag {
+  color: var(--av-silver-muted);
+  background: transparent;
+  border: 1px solid rgba(74, 30, 122, 0.5);
+  border-radius: var(--radius-s);
+  font-size: 0.7em;
+  padding: 0 0.35em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

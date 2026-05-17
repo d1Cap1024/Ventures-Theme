@@ -1,0 +1,59 @@
+/* ============================================
+   Tabs — flat (no chrome rounding), gold
+   underline on the active tab.
+   ============================================ */
+
+.theme-dark .workspace-tab-header-container {
+  background: var(--av-black);
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.theme-dark .workspace-tab-header {
+  background: transparent;
+  border-radius: 0 !important;
+  border: none;
+  box-shadow: none;
+  position: relative;
+}
+
+.theme-dark .workspace-tab-header-inner {
+  padding: 0.45em 0.8em;
+}
+
+.theme-dark .workspace-tab-header-inner-title {
+  color: var(--av-silver-muted);
+  font-family: var(--font-text);
+  font-size: 0.88em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.theme-dark .workspace-tab-header:hover .workspace-tab-header-inner-title {
+  color: var(--av-silver-light);
+}
+
+/* Active tab — gold underline + lifted text color */
+.theme-dark .workspace-tab-header.is-active {
+  background: var(--av-black);
+}
+.theme-dark .workspace-tab-header.is-active .workspace-tab-header-inner-title {
+  color: var(--av-gold);
+}
+.theme-dark .workspace-tab-header.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--av-gold);
+}
+
+/* Tab close icon */
+.theme-dark .workspace-tab-header-inner-close-button {
+  color: var(--av-silver-muted);
+}
+.theme-dark .workspace-tab-header-inner-close-button:hover {
+  color: var(--av-gold-light);
+  background: rgba(201, 168, 76, 0.10);
+}

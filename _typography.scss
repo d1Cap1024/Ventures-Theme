@@ -1,0 +1,32 @@
+/* ============================================
+   Body typography
+   ============================================ */
+
+.theme-dark {
+  --font-text-size: 16px;
+  --line-height-normal: 1.6;
+  --line-height-tight: 1.3;
+}
+
+.theme-dark body {
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reading & live-preview text gets the body font + comfortable rhythm */
+.theme-dark .markdown-preview-view,
+.theme-dark .markdown-source-view.mod-cm6 .cm-line {
+  font-family: var(--font-text);
+  letter-spacing: -0.005em;
+}
+
+.theme-dark .markdown-preview-view p,
+.theme-dark .markdown-source-view.mod-cm6 .cm-line {
+  line-height: 1.65;
+}
+
+/* Selection wash */
+.theme-dark ::selection {
+  background: var(--text-selection);
+}

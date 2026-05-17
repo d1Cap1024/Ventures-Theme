@@ -1,0 +1,54 @@
+/* ============================================
+   Graph view — gold nodes, purple-mid lines,
+   deep black canvas. Local graph picks up the
+   same palette.
+   ============================================ */
+
+.theme-dark .graph-view.color-fill {
+  color: var(--av-gold);
+}
+
+.theme-dark .graph-view.color-fill-tag {
+  color: var(--av-gold-light);
+}
+
+.theme-dark .graph-view.color-fill-attachment {
+  color: var(--av-silver);
+}
+
+.theme-dark .graph-view.color-fill-unresolved {
+  color: var(--av-silver-muted);
+}
+
+.theme-dark .graph-view.color-line {
+  color: rgba(74, 30, 122, 0.55);
+}
+
+.theme-dark .graph-view.color-text {
+  color: var(--av-silver-light);
+}
+
+.theme-dark .graph-view.color-fill-focused {
+  color: var(--av-gold-light);
+}
+
+.theme-dark .graph-view.color-circle {
+  color: var(--av-gold);
+}
+
+/* The graph canvas background */
+.theme-dark .view-content > .graph-view,
+.theme-dark .workspace-leaf-content[data-type="graph"] .view-content {
+  background: var(--av-black);
+}
+
+/* Graph control buttons (filter / display / forces panels) */
+.theme-dark .graph-controls {
+  background: var(--av-purple-deep);
+  border: 1px solid var(--divider-color);
+  border-radius: var(--radius-m);
+}
+.theme-dark .graph-controls .tree-item-self:hover {
+  background: var(--nav-item-background-hover);
+  color: var(--av-gold-light);
+}
