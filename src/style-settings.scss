@@ -97,22 +97,24 @@ settings:
     type: class-toggle
     default: true
   -
-    id: ventures-glass-strength
-    title: Glass strength
-    description: Blur radius and translucency of glass surfaces.
-    type: class-select
-    default: ventures-glass-default
-    allowEmpty: false
-    options:
-      -
-        label: Subtle
-        value: ventures-glass-subtle
-      -
-        label: Default
-        value: ventures-glass-default
-      -
-        label: Bold
-        value: ventures-glass-bold
+    id: ventures-glass-transparency
+    title: Glass transparency
+    description: How see-through the glass is. 0 = solid tint, 100 = invisible tint (pure blur).
+    type: variable-number-slider
+    default: 95
+    min: 0
+    max: 100
+    step: 1
+  -
+    id: ventures-glass-thickness
+    title: Glass thickness
+    description: How much the glass distorts content behind it. Higher = more frosted-lens magnification (heavier blur).
+    type: variable-number-slider
+    default: 28
+    min: 0
+    max: 60
+    step: 1
+    format: px
 */
 
 /* --- Accent intensity variants --- */

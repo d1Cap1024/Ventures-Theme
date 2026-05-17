@@ -1217,26 +1217,26 @@ body {
    reads as a tactile substrate, not a wallpaper
    that scrolls with content.
 
-   Sits BEHIND content. Workspace panels paint
-   their own opaque backgrounds; the texture
-   only shows through translucent surfaces
-   (see _glass.scss) and the workspace empty
-   margins.
+   Visible everywhere the chrome above is glass.
+   Workspace shells (panes, empty states) are
+   made transparent in _glass.scss so the weave
+   reads through; only the writing surface
+   (markdown editor / preview) stays opaque.
    ============================================ */
 .theme-dark body {
   background-color: var(--background-primary);
-  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.04) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.03) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.035) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.045) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.25) 0%, transparent 65%);
+  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.12) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.09) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.11) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.14) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.35) 0%, transparent 65%);
   background-attachment: fixed;
   background-size: 24px 24px, 24px 24px, 100% 100%;
 }
 
 /* --- Intensity variants (driven by Style Settings class-select) --- */
 .theme-dark.ventures-carbon-subtle body {
-  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.022) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.018) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.02) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.025) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.18) 0%, transparent 65%);
+  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.06) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.04) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.05) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.07) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.22) 0%, transparent 65%);
 }
 
 .theme-dark.ventures-carbon-bold body {
-  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.065) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.05) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.055) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.07) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.32) 0%, transparent 60%);
+  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.2) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.16) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.18) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.22) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.4) 0%, transparent 60%);
   background-size: 22px 22px, 22px 22px, 100% 100%;
 }
 
@@ -1246,92 +1246,182 @@ body {
 }
 
 /* ============================================
-   Glass surfaces — Apple-style backdrop blur
-   on chrome elements. Sidebars and dropdowns
-   become translucent so the carbon-fiber body
-   reads through; a 1px top-inset highlight
-   gives the signature Apple "rim" lit edge.
+   Glass surfaces — true Apple-style clear glass.
+   Near-zero white tint + heavy backdrop blur,
+   not the dark purple wash from v0.2. Applied
+   to every chrome surface so the carbon fiber
+   body reads through everywhere except the
+   writing canvas.
 
-   Loaded AFTER workspace/_sidebar.scss so the
-   translucent bg-color overrides sidebar's
-   opaque var(--background-primary-alt).
+   What gets glass:
+     - sidebars (left / right / mobile drawer)
+     - tab strip + individual tabs
+     - view headers (pane titles)
+     - status bar
+     - ribbon (icon strip)
+     - empty panes
+     - dropdowns / menus / popovers / tooltips
+     - modal frames
+
+   What stays opaque (so reading isn't ruined):
+     - .markdown-source-view, .cm-editor
+     - .markdown-preview-view
+     - .markdown-embed (embedded notes)
+     - actual file content
+
+   Loaded AFTER workspace/_sidebar.scss and the
+   other workspace partials so the translucent
+   bg overrides their opaque baselines.
    ============================================ */
-/* --- Tunables (defaults; overridden by intensity variants) --- */
+/* --- Tunables ---
+   Two user-facing knobs (set by Style Settings sliders):
+     --ventures-glass-transparency  (0 = solid, 100 = invisible tint)
+     --ventures-glass-thickness     (CSS length: 0px..60px)
+   Fallback defaults are declared here so the theme works
+   without Style Settings installed.
+
+   Derived tokens compute the actual rgba alpha and the
+   backdrop blur from those two knobs. --tint is the surface
+   alpha; --tint-strong is +0.04 for popovers/menus so they
+   read slightly heavier than sidebars. */
 .theme-dark {
-  --av-glass-alpha: 0.55; /* sidebar / large surfaces */
-  --av-glass-alpha-strong: 0.72; /* popovers / menus */
-  --av-glass-blur: 20px;
-  --av-glass-saturate: 140%;
-  --av-glass-rim: rgba(255, 255, 255, 0.06);
-  --av-glass-hairline: rgba(201, 168, 76, 0.18);
+  --ventures-glass-transparency: 95; /* fallback if Style Settings absent */
+  --ventures-glass-thickness: 28px; /* fallback if Style Settings absent */
+  --av-glass-alpha: calc((100 - var(--ventures-glass-transparency)) * 0.01);
+  --av-glass-alpha-strong: calc(var(--av-glass-alpha) + 0.04);
+  --av-glass-blur: var(--ventures-glass-thickness);
+  --av-glass-tint: rgba(255, 255, 255, var(--av-glass-alpha));
+  --av-glass-tint-strong: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  --av-glass-saturate: 180%;
+  --av-glass-rim: rgba(255, 255, 255, 0.07);
+  --av-glass-hairline: rgba(201, 168, 76, 0.14);
 }
 
-/* --- Sidebars --- */
+/* --- Workspace shell: transparent so body carbon fiber shows --- */
+.theme-dark .workspace,
+.theme-dark .workspace-split.mod-root,
+.theme-dark .workspace-tabs,
+.theme-dark .workspace-leaf,
+.theme-dark .workspace-leaf-content,
+.theme-dark .workspace-leaf-content[data-type=empty],
+.theme-dark .empty-state {
+  background-color: transparent;
+}
+
+/* --- Sidebars (left / right / mobile drawer) --- */
 .theme-dark .workspace-split.mod-left-split,
 .theme-dark .workspace-split.mod-right-split,
 .theme-dark .workspace-sidedock-vault-profile,
 .theme-dark .workspace-drawer {
-  background-color: rgba(22, 8, 40, var(--av-glass-alpha));
+  background-color: var(--av-glass-tint);
   -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
   backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
   box-shadow: inset 0 1px 0 var(--av-glass-rim);
+  border-right: 1px solid var(--av-glass-hairline);
 }
 
-/* Right side gets its rim on the inner edge */
 .theme-dark .workspace-split.mod-right-split {
-  box-shadow: inset 0 1px 0 var(--av-glass-rim), inset 1px 0 0 rgba(255, 255, 255, 0.04);
+  border-right: none;
+  border-left: 1px solid var(--av-glass-hairline);
 }
 
-/* --- Dropdowns, menus, suggestion containers, popovers --- */
+/* --- Tab strip + tabs --- */
+.theme-dark .workspace-tab-header-container,
+.theme-dark .workspace-tab-container {
+  background-color: var(--av-glass-tint);
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  box-shadow: inset 0 -1px 0 var(--av-glass-hairline);
+}
+
+.theme-dark .workspace-tab-header.is-active {
+  background-color: var(--av-glass-tint-strong);
+}
+
+/* --- View headers (pane titles: Files, Search, Outline) --- */
+.theme-dark .view-header,
+.theme-dark .nav-header,
+.theme-dark .workspace-leaf-header {
+  background-color: transparent;
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(var(--av-glass-saturate));
+  border-bottom: 1px solid var(--av-glass-hairline);
+}
+
+/* --- Status bar (bottom strip) --- */
+.theme-dark .status-bar {
+  background-color: var(--av-glass-tint);
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  border-top: 1px solid var(--av-glass-hairline);
+}
+
+/* --- Ribbon (icon strip on left edge) --- */
+.theme-dark .workspace-ribbon,
+.theme-dark .side-dock-ribbon,
+.theme-dark .mobile-toolbar {
+  background-color: var(--av-glass-tint);
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  border-right: 1px solid var(--av-glass-hairline);
+}
+
+/* --- Dropdowns, menus, suggestion containers, popovers, tooltips --- */
 .theme-dark .suggestion-container,
 .theme-dark .menu,
 .theme-dark .popover,
 .theme-dark .tooltip,
 .theme-dark .HyperMD-popover,
 .theme-dark .dropdown {
-  background-color: rgba(45, 18, 72, var(--av-glass-alpha-strong));
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(160%);
-  backdrop-filter: blur(var(--av-glass-blur)) saturate(160%);
+  background-color: var(--av-glass-tint-strong);
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
   border: 1px solid var(--av-glass-hairline);
-  box-shadow: inset 0 1px 0 var(--av-glass-rim), 0 12px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 1px 0 var(--av-glass-rim), 0 12px 32px rgba(0, 0, 0, 0.55);
 }
 
-/* Selected / hovered suggestion + menu items — gold wash that
-   reads against the glass instead of the original opaque purple */
 .theme-dark .suggestion-item.is-selected,
 .theme-dark .suggestion-item:hover,
 .theme-dark .menu-item:hover {
-  background-color: rgba(201, 168, 76, 0.14);
+  background-color: rgba(201, 168, 76, 0.16);
   color: var(--av-gold-light);
 }
 
-/* Native <select>-style dropdowns Obsidian renders in Settings */
 .theme-dark select.dropdown {
-  background-color: rgba(45, 18, 72, var(--av-glass-alpha-strong));
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(140%);
-  backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(140%);
+  background-color: var(--av-glass-tint-strong);
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.5)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(calc(var(--av-glass-blur) * 0.5)) saturate(var(--av-glass-saturate));
   border: 1px solid var(--av-glass-hairline);
 }
 
-/* --- Strength variants (Style Settings class-select) --- */
-.theme-dark.ventures-glass-subtle {
-  --av-glass-alpha: 0.72;
-  --av-glass-alpha-strong: 0.85;
-  --av-glass-blur: 12px;
-  --av-glass-saturate: 130%;
+/* --- Modals (Settings dialog, Open file, etc.) --- */
+.theme-dark .modal {
+  background-color: var(--av-glass-tint-strong);
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 1.4)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(calc(var(--av-glass-blur) * 1.4)) saturate(var(--av-glass-saturate));
+  border: 1px solid var(--av-glass-hairline);
+  box-shadow: inset 0 1px 0 var(--av-glass-rim), 0 24px 64px rgba(0, 0, 0, 0.65);
 }
 
-.theme-dark.ventures-glass-bold {
-  --av-glass-alpha: 0.38;
-  --av-glass-alpha-strong: 0.55;
-  --av-glass-blur: 30px;
-  --av-glass-saturate: 170%;
-  --av-glass-rim: rgba(255, 255, 255, 0.09);
-  --av-glass-hairline: rgba(201, 168, 76, 0.25);
+.theme-dark .modal-bg {
+  background-color: rgba(13, 5, 21, 0.55);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 
 /* --- Off switch (toggle removed via Style Settings) ---
-   Restore opaque surfaces from _sidebar.scss baseline. */
+   Restore opaque chrome from the baseline partials so the
+   flatter v0.1 look is one tap away. */
+.theme-dark:not(.ventures-glass) .workspace,
+.theme-dark:not(.ventures-glass) .workspace-split.mod-root,
+.theme-dark:not(.ventures-glass) .workspace-tabs,
+.theme-dark:not(.ventures-glass) .workspace-leaf,
+.theme-dark:not(.ventures-glass) .workspace-leaf-content,
+.theme-dark:not(.ventures-glass) .workspace-leaf-content[data-type=empty],
+.theme-dark:not(.ventures-glass) .empty-state {
+  background-color: var(--background-primary);
+}
+
 .theme-dark:not(.ventures-glass) .workspace-split.mod-left-split,
 .theme-dark:not(.ventures-glass) .workspace-split.mod-right-split,
 .theme-dark:not(.ventures-glass) .workspace-sidedock-vault-profile,
@@ -1342,12 +1432,27 @@ body {
   box-shadow: none;
 }
 
+.theme-dark:not(.ventures-glass) .workspace-tab-header-container,
+.theme-dark:not(.ventures-glass) .workspace-tab-container,
+.theme-dark:not(.ventures-glass) .status-bar,
+.theme-dark:not(.ventures-glass) .workspace-ribbon,
+.theme-dark:not(.ventures-glass) .side-dock-ribbon,
+.theme-dark:not(.ventures-glass) .mobile-toolbar,
+.theme-dark:not(.ventures-glass) .view-header,
+.theme-dark:not(.ventures-glass) .nav-header,
+.theme-dark:not(.ventures-glass) .workspace-leaf-header {
+  background-color: var(--background-primary);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 .theme-dark:not(.ventures-glass) .suggestion-container,
 .theme-dark:not(.ventures-glass) .menu,
 .theme-dark:not(.ventures-glass) .popover,
 .theme-dark:not(.ventures-glass) .tooltip,
 .theme-dark:not(.ventures-glass) .HyperMD-popover,
-.theme-dark:not(.ventures-glass) .dropdown {
+.theme-dark:not(.ventures-glass) .dropdown,
+.theme-dark:not(.ventures-glass) .modal {
   background-color: var(--av-purple-deep);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -1451,22 +1556,24 @@ settings:
     type: class-toggle
     default: true
   -
-    id: ventures-glass-strength
-    title: Glass strength
-    description: Blur radius and translucency of glass surfaces.
-    type: class-select
-    default: ventures-glass-default
-    allowEmpty: false
-    options:
-      -
-        label: Subtle
-        value: ventures-glass-subtle
-      -
-        label: Default
-        value: ventures-glass-default
-      -
-        label: Bold
-        value: ventures-glass-bold
+    id: ventures-glass-transparency
+    title: Glass transparency
+    description: How see-through the glass is. 0 = solid tint, 100 = invisible tint (pure blur).
+    type: variable-number-slider
+    default: 95
+    min: 0
+    max: 100
+    step: 1
+  -
+    id: ventures-glass-thickness
+    title: Glass thickness
+    description: How much the glass distorts content behind it. Higher = more frosted-lens magnification (heavier blur).
+    type: variable-number-slider
+    default: 28
+    min: 0
+    max: 60
+    step: 1
+    format: px
 */
 /* --- Accent intensity variants --- */
 .theme-dark.ventures-accent-subtle {

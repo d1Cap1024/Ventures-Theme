@@ -1,46 +1,134 @@
 /* ============================================
-   Glass surfaces — Apple-style backdrop blur
-   on chrome elements. Sidebars and dropdowns
-   become translucent so the carbon-fiber body
-   reads through; a 1px top-inset highlight
-   gives the signature Apple "rim" lit edge.
+   Glass surfaces — true Apple-style clear glass.
+   Near-zero white tint + heavy backdrop blur,
+   not the dark purple wash from v0.2. Applied
+   to every chrome surface so the carbon fiber
+   body reads through everywhere except the
+   writing canvas.
 
-   Loaded AFTER workspace/_sidebar.scss so the
-   translucent bg-color overrides sidebar's
-   opaque var(--background-primary-alt).
+   What gets glass:
+     - sidebars (left / right / mobile drawer)
+     - tab strip + individual tabs
+     - view headers (pane titles)
+     - status bar
+     - ribbon (icon strip)
+     - empty panes
+     - dropdowns / menus / popovers / tooltips
+     - modal frames
+
+   What stays opaque (so reading isn't ruined):
+     - .markdown-source-view, .cm-editor
+     - .markdown-preview-view
+     - .markdown-embed (embedded notes)
+     - actual file content
+
+   Loaded AFTER workspace/_sidebar.scss and the
+   other workspace partials so the translucent
+   bg overrides their opaque baselines.
    ============================================ */
 
-/* --- Tunables (defaults; overridden by intensity variants) --- */
+/* --- Tunables ---
+   Two user-facing knobs (set by Style Settings sliders):
+     --ventures-glass-transparency  (0 = solid, 100 = invisible tint)
+     --ventures-glass-thickness     (CSS length: 0px..60px)
+   Fallback defaults are declared here so the theme works
+   without Style Settings installed.
+
+   Derived tokens compute the actual rgba alpha and the
+   backdrop blur from those two knobs. --tint is the surface
+   alpha; --tint-strong is +0.04 for popovers/menus so they
+   read slightly heavier than sidebars. */
 
 .theme-dark {
-  --av-glass-alpha:        0.55; /* sidebar / large surfaces */
-  --av-glass-alpha-strong: 0.72; /* popovers / menus */
-  --av-glass-blur:         20px;
-  --av-glass-saturate:     140%;
-  --av-glass-rim:          rgba(255, 255, 255, 0.06);
-  --av-glass-hairline:     rgba(201, 168, 76, 0.18);
+  --ventures-glass-transparency: 95;     /* fallback if Style Settings absent */
+  --ventures-glass-thickness:    28px;   /* fallback if Style Settings absent */
+
+  --av-glass-alpha:        calc((100 - var(--ventures-glass-transparency)) * 0.01);
+  --av-glass-alpha-strong: calc(var(--av-glass-alpha) + 0.04);
+  --av-glass-blur:         var(--ventures-glass-thickness);
+  --av-glass-tint:         rgba(255, 255, 255, var(--av-glass-alpha));
+  --av-glass-tint-strong:  rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  --av-glass-saturate:     180%;
+  --av-glass-rim:          rgba(255, 255, 255, 0.07);
+  --av-glass-hairline:     rgba(201, 168, 76, 0.14);
 }
 
-/* --- Sidebars --- */
+/* --- Workspace shell: transparent so body carbon fiber shows --- */
+
+.theme-dark .workspace,
+.theme-dark .workspace-split.mod-root,
+.theme-dark .workspace-tabs,
+.theme-dark .workspace-leaf,
+.theme-dark .workspace-leaf-content,
+.theme-dark .workspace-leaf-content[data-type="empty"],
+.theme-dark .empty-state {
+  background-color: transparent;
+}
+
+/* --- Sidebars (left / right / mobile drawer) --- */
 
 .theme-dark .workspace-split.mod-left-split,
 .theme-dark .workspace-split.mod-right-split,
 .theme-dark .workspace-sidedock-vault-profile,
 .theme-dark .workspace-drawer {
-  background-color: rgba(22, 8, 40, var(--av-glass-alpha));
+  background-color: var(--av-glass-tint);
   -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
   backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
   box-shadow: inset 0 1px 0 var(--av-glass-rim);
+  border-right: 1px solid var(--av-glass-hairline);
 }
 
-/* Right side gets its rim on the inner edge */
 .theme-dark .workspace-split.mod-right-split {
-  box-shadow:
-    inset 0 1px 0 var(--av-glass-rim),
-    inset 1px 0 0 rgba(255, 255, 255, 0.04);
+  border-right: none;
+  border-left: 1px solid var(--av-glass-hairline);
 }
 
-/* --- Dropdowns, menus, suggestion containers, popovers --- */
+/* --- Tab strip + tabs --- */
+
+.theme-dark .workspace-tab-header-container,
+.theme-dark .workspace-tab-container {
+  background-color: var(--av-glass-tint);
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  box-shadow: inset 0 -1px 0 var(--av-glass-hairline);
+}
+
+.theme-dark .workspace-tab-header.is-active {
+  background-color: var(--av-glass-tint-strong);
+}
+
+/* --- View headers (pane titles: Files, Search, Outline) --- */
+
+.theme-dark .view-header,
+.theme-dark .nav-header,
+.theme-dark .workspace-leaf-header {
+  background-color: transparent;
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(var(--av-glass-saturate));
+  backdrop-filter:         blur(calc(var(--av-glass-blur) * 0.6)) saturate(var(--av-glass-saturate));
+  border-bottom: 1px solid var(--av-glass-hairline);
+}
+
+/* --- Status bar (bottom strip) --- */
+
+.theme-dark .status-bar {
+  background-color: var(--av-glass-tint);
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  border-top: 1px solid var(--av-glass-hairline);
+}
+
+/* --- Ribbon (icon strip on left edge) --- */
+
+.theme-dark .workspace-ribbon,
+.theme-dark .side-dock-ribbon,
+.theme-dark .mobile-toolbar {
+  background-color: var(--av-glass-tint);
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  border-right: 1px solid var(--av-glass-hairline);
+}
+
+/* --- Dropdowns, menus, suggestion containers, popovers, tooltips --- */
 
 .theme-dark .suggestion-container,
 .theme-dark .menu,
@@ -48,52 +136,60 @@
 .theme-dark .tooltip,
 .theme-dark .HyperMD-popover,
 .theme-dark .dropdown {
-  background-color: rgba(45, 18, 72, var(--av-glass-alpha-strong));
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(160%);
-  backdrop-filter:         blur(var(--av-glass-blur)) saturate(160%);
+  background-color: var(--av-glass-tint-strong);
+  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
+  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
   border: 1px solid var(--av-glass-hairline);
   box-shadow:
     inset 0 1px 0 var(--av-glass-rim),
-    0 12px 32px rgba(0, 0, 0, 0.50);
+    0 12px 32px rgba(0, 0, 0, 0.55);
 }
 
-/* Selected / hovered suggestion + menu items — gold wash that
-   reads against the glass instead of the original opaque purple */
 .theme-dark .suggestion-item.is-selected,
 .theme-dark .suggestion-item:hover,
 .theme-dark .menu-item:hover {
-  background-color: rgba(201, 168, 76, 0.14);
+  background-color: rgba(201, 168, 76, 0.16);
   color: var(--av-gold-light);
 }
 
-/* Native <select>-style dropdowns Obsidian renders in Settings */
 .theme-dark select.dropdown {
-  background-color: rgba(45, 18, 72, var(--av-glass-alpha-strong));
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(140%);
-  backdrop-filter:         blur(calc(var(--av-glass-blur) * 0.6)) saturate(140%);
+  background-color: var(--av-glass-tint-strong);
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.5)) saturate(var(--av-glass-saturate));
+  backdrop-filter:         blur(calc(var(--av-glass-blur) * 0.5)) saturate(var(--av-glass-saturate));
   border: 1px solid var(--av-glass-hairline);
 }
 
-/* --- Strength variants (Style Settings class-select) --- */
+/* --- Modals (Settings dialog, Open file, etc.) --- */
 
-.theme-dark.ventures-glass-subtle {
-  --av-glass-alpha:        0.72;
-  --av-glass-alpha-strong: 0.85;
-  --av-glass-blur:         12px;
-  --av-glass-saturate:     130%;
+.theme-dark .modal {
+  background-color: var(--av-glass-tint-strong);
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 1.4)) saturate(var(--av-glass-saturate));
+  backdrop-filter:         blur(calc(var(--av-glass-blur) * 1.4)) saturate(var(--av-glass-saturate));
+  border: 1px solid var(--av-glass-hairline);
+  box-shadow:
+    inset 0 1px 0 var(--av-glass-rim),
+    0 24px 64px rgba(0, 0, 0, 0.65);
 }
 
-.theme-dark.ventures-glass-bold {
-  --av-glass-alpha:        0.38;
-  --av-glass-alpha-strong: 0.55;
-  --av-glass-blur:         30px;
-  --av-glass-saturate:     170%;
-  --av-glass-rim:          rgba(255, 255, 255, 0.09);
-  --av-glass-hairline:     rgba(201, 168, 76, 0.25);
+.theme-dark .modal-bg {
+  background-color: rgba(13, 5, 21, 0.55);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter:         blur(4px);
 }
 
 /* --- Off switch (toggle removed via Style Settings) ---
-   Restore opaque surfaces from _sidebar.scss baseline. */
+   Restore opaque chrome from the baseline partials so the
+   flatter v0.1 look is one tap away. */
+
+.theme-dark:not(.ventures-glass) .workspace,
+.theme-dark:not(.ventures-glass) .workspace-split.mod-root,
+.theme-dark:not(.ventures-glass) .workspace-tabs,
+.theme-dark:not(.ventures-glass) .workspace-leaf,
+.theme-dark:not(.ventures-glass) .workspace-leaf-content,
+.theme-dark:not(.ventures-glass) .workspace-leaf-content[data-type="empty"],
+.theme-dark:not(.ventures-glass) .empty-state {
+  background-color: var(--background-primary);
+}
 
 .theme-dark:not(.ventures-glass) .workspace-split.mod-left-split,
 .theme-dark:not(.ventures-glass) .workspace-split.mod-right-split,
@@ -105,12 +201,27 @@
   box-shadow: none;
 }
 
+.theme-dark:not(.ventures-glass) .workspace-tab-header-container,
+.theme-dark:not(.ventures-glass) .workspace-tab-container,
+.theme-dark:not(.ventures-glass) .status-bar,
+.theme-dark:not(.ventures-glass) .workspace-ribbon,
+.theme-dark:not(.ventures-glass) .side-dock-ribbon,
+.theme-dark:not(.ventures-glass) .mobile-toolbar,
+.theme-dark:not(.ventures-glass) .view-header,
+.theme-dark:not(.ventures-glass) .nav-header,
+.theme-dark:not(.ventures-glass) .workspace-leaf-header {
+  background-color: var(--background-primary);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 .theme-dark:not(.ventures-glass) .suggestion-container,
 .theme-dark:not(.ventures-glass) .menu,
 .theme-dark:not(.ventures-glass) .popover,
 .theme-dark:not(.ventures-glass) .tooltip,
 .theme-dark:not(.ventures-glass) .HyperMD-popover,
-.theme-dark:not(.ventures-glass) .dropdown {
+.theme-dark:not(.ventures-glass) .dropdown,
+.theme-dark:not(.ventures-glass) .modal {
   background-color: var(--av-purple-deep);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
