@@ -67,6 +67,52 @@ settings:
     description: Tightens line-height and paddings ~15% across the editor and lists.
     type: class-toggle
     default: false
+  -
+    id: ventures-carbon-fiber
+    title: Carbon fiber background
+    description: Subtle woven carbon-fiber texture behind translucent surfaces.
+    type: class-toggle
+    default: true
+  -
+    id: ventures-carbon-intensity
+    title: Carbon fiber intensity
+    description: How visible the weave reads through translucent chrome.
+    type: class-select
+    default: ventures-carbon-default
+    allowEmpty: false
+    options:
+      -
+        label: Subtle
+        value: ventures-carbon-subtle
+      -
+        label: Default
+        value: ventures-carbon-default
+      -
+        label: Bold
+        value: ventures-carbon-bold
+  -
+    id: ventures-glass
+    title: Glass surfaces
+    description: Apple-style translucent backdrop-blur on sidebars, dropdowns, menus, suggestion lists, and popovers.
+    type: class-toggle
+    default: true
+  -
+    id: ventures-glass-strength
+    title: Glass strength
+    description: Blur radius and translucency of glass surfaces.
+    type: class-select
+    default: ventures-glass-default
+    allowEmpty: false
+    options:
+      -
+        label: Subtle
+        value: ventures-glass-subtle
+      -
+        label: Default
+        value: ventures-glass-default
+      -
+        label: Bold
+        value: ventures-glass-bold
 */
 
 /* --- Accent intensity variants --- */
