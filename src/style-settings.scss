@@ -70,51 +70,86 @@ settings:
   -
     id: ventures-carbon-fiber
     title: Carbon fiber background
-    description: Subtle woven carbon-fiber texture behind translucent surfaces.
+    description: Animated woven carbon-fiber texture on the body. Continuous slow drift gives a "living material" feel.
     type: class-toggle
     default: true
   -
-    id: ventures-carbon-intensity
-    title: Carbon fiber intensity
-    description: How visible the weave reads through translucent chrome.
+    id: ventures-carbon-weave
+    title: Carbon weave type
+    description: Different weave constructions, each with its own drift character.
     type: class-select
-    default: ventures-carbon-default
+    default: ventures-carbon-forged
     allowEmpty: false
     options:
       -
-        label: Subtle
-        value: ventures-carbon-subtle
+        label: Forged (chopped, default)
+        value: ventures-carbon-forged
       -
-        label: Default
-        value: ventures-carbon-default
+        label: Twill weave (2/2 classic)
+        value: ventures-carbon-twill
       -
-        label: Bold
-        value: ventures-carbon-bold
+        label: Triaxial weave (aerospace)
+        value: ventures-carbon-triaxial
+  -
+    id: ventures-carbon-strength
+    title: Carbon strength
+    description: How prominent the strands read. 0 = invisible, 100 = strong material.
+    type: variable-number-slider
+    default: 50
+    min: 0
+    max: 100
+    step: 1
   -
     id: ventures-glass
     title: Glass surfaces
-    description: Apple-style translucent backdrop-blur on sidebars, dropdowns, menus, suggestion lists, and popovers.
+    description: Translucent backdrop-blur on sidebars, tabs, status bar, ribbon, dropdowns, menus, popovers, and modals.
     type: class-toggle
     default: true
   -
     id: ventures-glass-transparency
     title: Glass transparency
-    description: How see-through the glass is. 0 = solid tint, 100 = invisible tint (pure blur).
+    description: Tint alpha. The whole range stays in "subtly frosted at most" territory — even 0 is just shy of polish.
     type: variable-number-slider
-    default: 95
+    default: 30
     min: 0
     max: 100
     step: 1
   -
     id: ventures-glass-thickness
     title: Glass thickness
-    description: How much the glass distorts content behind it. Higher = more frosted-lens magnification (heavier blur).
+    description: Magnification cue — saturate + contrast on what's behind the pane. Deliberately subtle; the rim does the heavy lifting.
     type: variable-number-slider
-    default: 28
+    default: 20
     min: 0
-    max: 60
+    max: 100
     step: 1
-    format: px
+  -
+    id: ventures-glass-frost
+    title: Glass frost
+    description: Backdrop blur radius. 0 = near-perfect polish, 12 = traditional frosted glass.
+    type: variable-number-slider
+    default: 3
+    min: 0
+    max: 12
+    step: 1
+  -
+    id: ventures-glass-border-width
+    title: Glass border width
+    description: Rim thickness — where the edge distortion reads. Wider = more refractive lensing effect.
+    type: variable-number-slider
+    default: 1
+    min: 0
+    max: 6
+    step: 1
+  -
+    id: ventures-glass-radius
+    title: Glass corner radius
+    description: Corner rounding for every glass surface.
+    type: variable-number-slider
+    default: 4
+    min: 0
+    max: 32
+    step: 1
 */
 
 /* --- Accent intensity variants --- */
