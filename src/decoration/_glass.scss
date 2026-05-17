@@ -1,35 +1,39 @@
 /* ============================================
    Glass surfaces — every chrome surface gets a
-   highly transparent, lightly frosted, slightly
-   magnified pane with a chromatic rim.
+   highly transparent pane with NO hard edges
+   (soft halos only) and thickness that reads
+   across the WHOLE surface (top highlight to
+   bottom shadow + uniform backdrop saturation),
+   not just at the rim.
 
    Five user-facing knobs (all Style Settings sliders):
 
      ventures-glass-transparency  0..100  default 30
-        Drives surface alpha. Compressed range so the
-        whole slider stays in "subtly frosted at most"
-        territory — even at 0 the tint maxes at ~0.06.
-        100 = invisible polish.
+        Surface tint alpha. Compressed range: max ~0.06.
+        Whole slider stays in "subtly frosted at most".
 
      ventures-glass-thickness     0..100  default 20
-        Drives ONLY perceptual density: saturate +
-        contrast + a tiny chromatic shift on the backdrop.
-        Deliberately subtle — the visible cue for "thick
-        glass" is the rim, not the magnification.
+        Drives the surface depth effect uniformly:
+        top→bottom highlight/shadow overlay,
+        inset edge brightness, backdrop saturate/
+        contrast/brightness boost. NOT blur.
 
      ventures-glass-frost         0..12   default 3
         Backdrop blur radius in px. Independent of
-        thickness. At 0 you get a near-perfect polish
-        (rim still visible); cranked up it becomes
-        traditional frosted glass.
+        thickness. 0 = near-perfect polish.
 
      ventures-glass-border-width  0..6    default 1
-        Rim thickness. THIS is where edge distortion
-        reads — a chromatic gradient border that catches
-        the light and bends it.
+        Edge softness/halo spread. NOT a hard border —
+        scales the inset edge glow and outward halo
+        so the transition fades naturally into the
+        carbon weave behind.
 
      ventures-glass-radius        0..32   default 4
-        Corner radius for every glass surface.
+        Corner rounding for every glass surface.
+
+   Writing surface (markdown editor / preview /
+   reading view) is made transparent so the body
+   carbon weave reads through as the note background.
 
    Loaded after every workspace partial so the
    translucent bg wins over their opaque baselines.
@@ -45,34 +49,29 @@
   --ventures-glass-border-width:   1;
   --ventures-glass-radius:         4;
 
-  /* Derived: tint alpha. Compressed: max 0.06 — "subtly frosted at most".
-     Inverted so slider=0 → most tint, slider=100 → invisible. */
+  /* Tint alpha — compressed: max 0.06, slider=100 → invisible */
   --av-glass-alpha:         calc((100 - var(--ventures-glass-transparency)) * 0.0006);
   --av-glass-alpha-strong:  calc(var(--av-glass-alpha) + 0.02);
 
-  /* Frost: independent blur radius in px */
+  /* Frost (backdrop blur radius) */
   --av-glass-frost:         calc(var(--ventures-glass-frost) * 1px);
-  --av-glass-frost-strong:  calc(var(--av-glass-frost) * 1.4px);
+  --av-glass-frost-strong:  calc(var(--ventures-glass-frost) * 1.4px);
 
-  /* Thickness → magnification trio. All percentages scale with the slider.
-     Deliberately gentle: saturate +0..+40%, contrast +0..+10%. */
+  /* Thickness — distributed across the full surface, not just rim */
   --av-glass-saturate:      calc(140% + var(--ventures-glass-thickness) * 0.4%);
   --av-glass-contrast:      calc(100% + var(--ventures-glass-thickness) * 0.1%);
   --av-glass-brightness:    calc(100% + var(--ventures-glass-thickness) * 0.04%);
+  --av-glass-shine-alpha:   calc(var(--ventures-glass-thickness) * 0.0008);
+  --av-glass-shadow-alpha:  calc(var(--ventures-glass-thickness) * 0.0010);
+
+  /* Edge — soft halo and inset glow, not a hard border */
+  --av-glass-edge-halo:     calc(var(--ventures-glass-border-width) * 6px);
+  --av-glass-edge-inset:    calc(var(--ventures-glass-border-width) * 8px);
+  --av-glass-edge-alpha:    calc(var(--ventures-glass-border-width) * 0.014 + 0.015);
 
   /* Geometry */
-  --av-glass-rim-width:     calc(var(--ventures-glass-border-width) * 1px);
   --av-glass-radius:        calc(var(--ventures-glass-radius) * 1px);
-
-  /* Static rim/highlight colors — used in gradient border + inset shadows */
-  --av-glass-rim-lit:       rgba(255, 255, 255, 0.22);
-  --av-glass-rim-shadow:    rgba(0, 0, 0, 0.18);
-  --av-glass-rim-tint:      rgba(255, 255, 255, 0.06);
 }
-
-/* --- Mixin-ish shared values via CSS custom-property assignment ---
-   Each glass surface uses the same backdrop-filter recipe so the
-   thickness/frost knobs propagate uniformly. */
 
 /* --- Workspace shell: transparent so the carbon weave shows --- */
 
@@ -86,13 +85,34 @@
   background-color: transparent;
 }
 
-/* --- Sidebars (left / right / mobile drawer) --- */
+/* --- Writing surface: transparent so carbon IS the note background --- */
 
-.theme-dark .workspace-split.mod-left-split,
-.theme-dark .workspace-split.mod-right-split,
-.theme-dark .workspace-sidedock-vault-profile,
-.theme-dark .workspace-drawer {
+.theme-dark .markdown-source-view,
+.theme-dark .markdown-source-view.mod-cm6 .cm-editor,
+.theme-dark .cm-scroller,
+.theme-dark .markdown-preview-view,
+.theme-dark .markdown-reading-view,
+.theme-dark .markdown-embed {
+  background-color: transparent;
+}
+
+/* ============================================
+   Shared glass recipe (no hard border, soft
+   halos, full-surface thickness shading).
+   ============================================ */
+
+%glass-surface {
+  /* Tint */
   background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  /* Full-surface thickness shading: top highlight → middle clear → bottom shadow */
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, var(--av-glass-shine-alpha))  0%,
+    rgba(255, 255, 255, 0)                            40%,
+    rgba(255, 255, 255, 0)                            60%,
+    rgba(  0,   0,   0, var(--av-glass-shadow-alpha)) 100%
+  );
+  /* Backdrop effects (saturate/contrast/brightness uniformly across the pane) */
   -webkit-backdrop-filter:
     blur(var(--av-glass-frost))
     saturate(var(--av-glass-saturate))
@@ -103,36 +123,59 @@
     saturate(var(--av-glass-saturate))
     contrast(var(--av-glass-contrast))
     brightness(var(--av-glass-brightness));
-
-  border-style: solid;
-  border-width: var(--av-glass-rim-width);
-  border-image: linear-gradient(
-    135deg,
-    var(--av-glass-rim-lit) 0%,
-    var(--av-glass-rim-tint) 35%,
-    var(--av-glass-rim-shadow) 65%,
-    var(--av-glass-rim-lit) 100%
-  ) 1;
+  /* No hard border — soft glows only */
+  border: none;
   border-radius: var(--av-glass-radius);
+  box-shadow:
+    /* Inset edge glow — creates depth without a hard line */
+    inset 0 0 var(--av-glass-edge-inset) rgba(255, 255, 255, var(--av-glass-edge-alpha)),
+    /* Outer soft halo bleed into the carbon */
+    0 0 var(--av-glass-edge-halo) rgba(255, 255, 255, calc(var(--av-glass-edge-alpha) * 0.5)),
+    /* Depth drop shadow */
+    0 12px 32px rgba(0, 0, 0, 0.30);
+}
 
-  box-shadow: inset 0 1px 0 var(--av-glass-rim-lit);
+%glass-surface-strong {
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, var(--av-glass-shine-alpha))  0%,
+    rgba(255, 255, 255, 0)                            40%,
+    rgba(255, 255, 255, 0)                            60%,
+    rgba(  0,   0,   0, var(--av-glass-shadow-alpha)) 100%
+  );
+  -webkit-backdrop-filter:
+    blur(var(--av-glass-frost-strong))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast))
+    brightness(var(--av-glass-brightness));
+  backdrop-filter:
+    blur(var(--av-glass-frost-strong))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast))
+    brightness(var(--av-glass-brightness));
+  border: none;
+  border-radius: var(--av-glass-radius);
+  box-shadow:
+    inset 0 0 var(--av-glass-edge-inset) rgba(255, 255, 255, var(--av-glass-edge-alpha)),
+    0 0 var(--av-glass-edge-halo) rgba(255, 255, 255, calc(var(--av-glass-edge-alpha) * 0.5)),
+    0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* --- Sidebars --- */
+
+.theme-dark .workspace-split.mod-left-split,
+.theme-dark .workspace-split.mod-right-split,
+.theme-dark .workspace-sidedock-vault-profile,
+.theme-dark .workspace-drawer {
+  @extend %glass-surface;
 }
 
 /* --- Tab strip + active tab --- */
 
 .theme-dark .workspace-tab-header-container,
 .theme-dark .workspace-tab-container {
-  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
-  -webkit-backdrop-filter:
-    blur(var(--av-glass-frost))
-    saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast));
-  backdrop-filter:
-    blur(var(--av-glass-frost))
-    saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast));
-  border-radius: var(--av-glass-radius);
-  box-shadow: inset 0 -1px 0 var(--av-glass-rim-tint);
+  @extend %glass-surface;
 }
 
 .theme-dark .workspace-tab-header.is-active {
@@ -152,22 +195,18 @@
   backdrop-filter:
     blur(calc(var(--av-glass-frost) * 0.7))
     saturate(var(--av-glass-saturate));
-  border-bottom: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
+  border: none;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, calc(var(--av-glass-edge-alpha) * 0.7));
 }
 
 /* --- Status bar --- */
 
 .theme-dark .status-bar {
-  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
-  -webkit-backdrop-filter:
-    blur(var(--av-glass-frost))
-    saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast));
-  backdrop-filter:
-    blur(var(--av-glass-frost))
-    saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast));
-  border-top: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
+  @extend %glass-surface;
+  border-radius: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, calc(var(--av-glass-edge-alpha) * 0.8)),
+    0 -8px 24px rgba(0, 0, 0, 0.25);
 }
 
 /* --- Ribbon --- */
@@ -175,16 +214,8 @@
 .theme-dark .workspace-ribbon,
 .theme-dark .side-dock-ribbon,
 .theme-dark .mobile-toolbar {
-  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
-  -webkit-backdrop-filter:
-    blur(var(--av-glass-frost))
-    saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast));
-  backdrop-filter:
-    blur(var(--av-glass-frost))
-    saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast));
-  border-right: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
+  @extend %glass-surface;
+  border-radius: 0;
 }
 
 /* --- Dropdowns / menus / suggestion containers / popovers / tooltips --- */
@@ -195,32 +226,7 @@
 .theme-dark .tooltip,
 .theme-dark .HyperMD-popover,
 .theme-dark .dropdown {
-  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
-  -webkit-backdrop-filter:
-    blur(var(--av-glass-frost-strong))
-    saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast))
-    brightness(var(--av-glass-brightness));
-  backdrop-filter:
-    blur(var(--av-glass-frost-strong))
-    saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast))
-    brightness(var(--av-glass-brightness));
-
-  border-style: solid;
-  border-width: var(--av-glass-rim-width);
-  border-image: linear-gradient(
-    135deg,
-    var(--av-glass-rim-lit) 0%,
-    var(--av-glass-rim-tint) 50%,
-    var(--av-glass-rim-shadow) 100%
-  ) 1;
-  border-radius: var(--av-glass-radius);
-
-  box-shadow:
-    inset 0 1px 0 var(--av-glass-rim-lit),
-    inset 0 -1px 0 var(--av-glass-rim-shadow),
-    0 12px 32px rgba(0, 0, 0, 0.55);
+  @extend %glass-surface-strong;
 }
 
 .theme-dark .suggestion-item.is-selected,
@@ -231,40 +237,26 @@
 }
 
 .theme-dark select.dropdown {
-  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-frost) * 0.5)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(calc(var(--av-glass-frost) * 0.5)) saturate(var(--av-glass-saturate));
-  border: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
-  border-radius: var(--av-glass-radius);
+  @extend %glass-surface-strong;
 }
 
 /* --- Modals --- */
 
 .theme-dark .modal {
-  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  @extend %glass-surface-strong;
   -webkit-backdrop-filter:
     blur(calc(var(--av-glass-frost-strong) * 1.2))
     saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast));
+    contrast(var(--av-glass-contrast))
+    brightness(var(--av-glass-brightness));
   backdrop-filter:
     blur(calc(var(--av-glass-frost-strong) * 1.2))
     saturate(var(--av-glass-saturate))
-    contrast(var(--av-glass-contrast));
-
-  border-style: solid;
-  border-width: var(--av-glass-rim-width);
-  border-image: linear-gradient(
-    135deg,
-    var(--av-glass-rim-lit) 0%,
-    var(--av-glass-rim-tint) 40%,
-    var(--av-glass-rim-shadow) 80%,
-    var(--av-glass-rim-lit) 100%
-  ) 1;
-  border-radius: var(--av-glass-radius);
-
+    contrast(var(--av-glass-contrast))
+    brightness(var(--av-glass-brightness));
   box-shadow:
-    inset 0 1px 0 var(--av-glass-rim-lit),
-    inset 0 -1px 0 var(--av-glass-rim-shadow),
+    inset 0 0 var(--av-glass-edge-inset) rgba(255, 255, 255, var(--av-glass-edge-alpha)),
+    0 0 var(--av-glass-edge-halo) rgba(255, 255, 255, calc(var(--av-glass-edge-alpha) * 0.5)),
     0 24px 64px rgba(0, 0, 0, 0.65);
 }
 
@@ -274,8 +266,12 @@
   backdrop-filter:         blur(4px);
 }
 
-/* --- Off switch ---
-   Restore opaque baselines so the flatter v0.1 look returns. */
+/* ============================================
+   Off switch — restore the opaque v0.1 look,
+   including putting the writing surface back to
+   solid (so notes don't sit on transparent bg
+   when glass is disabled).
+   ============================================ */
 
 .theme-dark:not(.ventures-glass) .workspace,
 .theme-dark:not(.ventures-glass) .workspace-split.mod-root,
@@ -283,7 +279,13 @@
 .theme-dark:not(.ventures-glass) .workspace-leaf,
 .theme-dark:not(.ventures-glass) .workspace-leaf-content,
 .theme-dark:not(.ventures-glass) .workspace-leaf-content[data-type="empty"],
-.theme-dark:not(.ventures-glass) .empty-state {
+.theme-dark:not(.ventures-glass) .empty-state,
+.theme-dark:not(.ventures-glass) .markdown-source-view,
+.theme-dark:not(.ventures-glass) .markdown-source-view.mod-cm6 .cm-editor,
+.theme-dark:not(.ventures-glass) .cm-scroller,
+.theme-dark:not(.ventures-glass) .markdown-preview-view,
+.theme-dark:not(.ventures-glass) .markdown-reading-view,
+.theme-dark:not(.ventures-glass) .markdown-embed {
   background-color: var(--background-primary);
 }
 
@@ -292,12 +294,12 @@
 .theme-dark:not(.ventures-glass) .workspace-sidedock-vault-profile,
 .theme-dark:not(.ventures-glass) .workspace-drawer {
   background-color: var(--background-primary-alt);
+  background-image: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  border-image: none;
-  border-width: 0 1px 0 0;
-  border-color: var(--divider-color);
   border-radius: 0;
+  border: 0;
+  border-right: 1px solid var(--divider-color);
   box-shadow: none;
 }
 
@@ -311,9 +313,11 @@
 .theme-dark:not(.ventures-glass) .nav-header,
 .theme-dark:not(.ventures-glass) .workspace-leaf-header {
   background-color: var(--background-primary);
+  background-image: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   border-radius: 0;
+  box-shadow: none;
 }
 
 .theme-dark:not(.ventures-glass) .suggestion-container,
@@ -324,9 +328,10 @@
 .theme-dark:not(.ventures-glass) .dropdown,
 .theme-dark:not(.ventures-glass) .modal {
   background-color: var(--av-purple-deep);
+  background-image: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  border-image: none;
-  border: 1px solid var(--av-purple-mid);
   border-radius: var(--radius-m);
+  border: 1px solid var(--av-purple-mid);
+  box-shadow: none;
 }

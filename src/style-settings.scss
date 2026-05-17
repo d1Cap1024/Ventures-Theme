@@ -92,10 +92,46 @@ settings:
         value: ventures-carbon-triaxial
   -
     id: ventures-carbon-strength
-    title: Carbon strength
-    description: How prominent the strands read. 0 = invisible, 100 = strong material.
+    title: Carbon strength (master)
+    description: Master multiplier on every strand. 0 = invisible, 100 = strong material.
     type: variable-number-slider
-    default: 50
+    default: 60
+    min: 0
+    max: 100
+    step: 1
+  -
+    id: ventures-carbon-silver-strength
+    title: Carbon — silver strand strength
+    description: Visibility of the metallic silver strands. Multiplied by master strength.
+    type: variable-number-slider
+    default: 75
+    min: 0
+    max: 100
+    step: 1
+  -
+    id: ventures-carbon-gold-strength
+    title: Carbon — gold strand strength
+    description: Visibility of the metallic gold strands. Multiplied by master strength.
+    type: variable-number-slider
+    default: 35
+    min: 0
+    max: 100
+    step: 1
+  -
+    id: ventures-carbon-purple-strength
+    title: Carbon — purple strand strength
+    description: Visibility of the royal purple strands. Multiplied by master strength.
+    type: variable-number-slider
+    default: 55
+    min: 0
+    max: 100
+    step: 1
+  -
+    id: ventures-carbon-organization
+    title: Carbon organization
+    description: How regimented the weave looks. 100 = perfectly organized weave; 0 = chaos noise layer at full strength.
+    type: variable-number-slider
+    default: 60
     min: 0
     max: 100
     step: 1
