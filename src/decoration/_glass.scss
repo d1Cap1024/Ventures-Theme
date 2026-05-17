@@ -1,59 +1,80 @@
 /* ============================================
-   Glass surfaces — true Apple-style clear glass.
-   Near-zero white tint + heavy backdrop blur,
-   not the dark purple wash from v0.2. Applied
-   to every chrome surface so the carbon fiber
-   body reads through everywhere except the
-   writing canvas.
+   Glass surfaces — every chrome surface gets a
+   highly transparent, lightly frosted, slightly
+   magnified pane with a chromatic rim.
 
-   What gets glass:
-     - sidebars (left / right / mobile drawer)
-     - tab strip + individual tabs
-     - view headers (pane titles)
-     - status bar
-     - ribbon (icon strip)
-     - empty panes
-     - dropdowns / menus / popovers / tooltips
-     - modal frames
+   Five user-facing knobs (all Style Settings sliders):
 
-   What stays opaque (so reading isn't ruined):
-     - .markdown-source-view, .cm-editor
-     - .markdown-preview-view
-     - .markdown-embed (embedded notes)
-     - actual file content
+     ventures-glass-transparency  0..100  default 30
+        Drives surface alpha. Compressed range so the
+        whole slider stays in "subtly frosted at most"
+        territory — even at 0 the tint maxes at ~0.06.
+        100 = invisible polish.
 
-   Loaded AFTER workspace/_sidebar.scss and the
-   other workspace partials so the translucent
-   bg overrides their opaque baselines.
+     ventures-glass-thickness     0..100  default 20
+        Drives ONLY perceptual density: saturate +
+        contrast + a tiny chromatic shift on the backdrop.
+        Deliberately subtle — the visible cue for "thick
+        glass" is the rim, not the magnification.
+
+     ventures-glass-frost         0..12   default 3
+        Backdrop blur radius in px. Independent of
+        thickness. At 0 you get a near-perfect polish
+        (rim still visible); cranked up it becomes
+        traditional frosted glass.
+
+     ventures-glass-border-width  0..6    default 1
+        Rim thickness. THIS is where edge distortion
+        reads — a chromatic gradient border that catches
+        the light and bends it.
+
+     ventures-glass-radius        0..32   default 4
+        Corner radius for every glass surface.
+
+   Loaded after every workspace partial so the
+   translucent bg wins over their opaque baselines.
    ============================================ */
 
-/* --- Tunables ---
-   Two user-facing knobs (set by Style Settings sliders):
-     --ventures-glass-transparency  (0 = solid, 100 = invisible tint)
-     --ventures-glass-thickness     (CSS length: 0px..60px)
-   Fallback defaults are declared here so the theme works
-   without Style Settings installed.
-
-   Derived tokens compute the actual rgba alpha and the
-   backdrop blur from those two knobs. --tint is the surface
-   alpha; --tint-strong is +0.04 for popovers/menus so they
-   read slightly heavier than sidebars. */
+/* --- Tunables: knob defaults + derived tokens --- */
 
 .theme-dark {
-  --ventures-glass-transparency: 95;     /* fallback if Style Settings absent */
-  --ventures-glass-thickness:    28px;   /* fallback if Style Settings absent */
+  /* Slider fallbacks (used if Style Settings isn't installed) */
+  --ventures-glass-transparency:  30;
+  --ventures-glass-thickness:     20;
+  --ventures-glass-frost:          3;
+  --ventures-glass-border-width:   1;
+  --ventures-glass-radius:         4;
 
-  --av-glass-alpha:        calc((100 - var(--ventures-glass-transparency)) * 0.01);
-  --av-glass-alpha-strong: calc(var(--av-glass-alpha) + 0.04);
-  --av-glass-blur:         var(--ventures-glass-thickness);
-  --av-glass-tint:         rgba(255, 255, 255, var(--av-glass-alpha));
-  --av-glass-tint-strong:  rgba(255, 255, 255, var(--av-glass-alpha-strong));
-  --av-glass-saturate:     180%;
-  --av-glass-rim:          rgba(255, 255, 255, 0.07);
-  --av-glass-hairline:     rgba(201, 168, 76, 0.14);
+  /* Derived: tint alpha. Compressed: max 0.06 — "subtly frosted at most".
+     Inverted so slider=0 → most tint, slider=100 → invisible. */
+  --av-glass-alpha:         calc((100 - var(--ventures-glass-transparency)) * 0.0006);
+  --av-glass-alpha-strong:  calc(var(--av-glass-alpha) + 0.02);
+
+  /* Frost: independent blur radius in px */
+  --av-glass-frost:         calc(var(--ventures-glass-frost) * 1px);
+  --av-glass-frost-strong:  calc(var(--av-glass-frost) * 1.4px);
+
+  /* Thickness → magnification trio. All percentages scale with the slider.
+     Deliberately gentle: saturate +0..+40%, contrast +0..+10%. */
+  --av-glass-saturate:      calc(140% + var(--ventures-glass-thickness) * 0.4%);
+  --av-glass-contrast:      calc(100% + var(--ventures-glass-thickness) * 0.1%);
+  --av-glass-brightness:    calc(100% + var(--ventures-glass-thickness) * 0.04%);
+
+  /* Geometry */
+  --av-glass-rim-width:     calc(var(--ventures-glass-border-width) * 1px);
+  --av-glass-radius:        calc(var(--ventures-glass-radius) * 1px);
+
+  /* Static rim/highlight colors — used in gradient border + inset shadows */
+  --av-glass-rim-lit:       rgba(255, 255, 255, 0.22);
+  --av-glass-rim-shadow:    rgba(0, 0, 0, 0.18);
+  --av-glass-rim-tint:      rgba(255, 255, 255, 0.06);
 }
 
-/* --- Workspace shell: transparent so body carbon fiber shows --- */
+/* --- Mixin-ish shared values via CSS custom-property assignment ---
+   Each glass surface uses the same backdrop-filter recipe so the
+   thickness/frost knobs propagate uniformly. */
+
+/* --- Workspace shell: transparent so the carbon weave shows --- */
 
 .theme-dark .workspace,
 .theme-dark .workspace-split.mod-root,
@@ -71,64 +92,102 @@
 .theme-dark .workspace-split.mod-right-split,
 .theme-dark .workspace-sidedock-vault-profile,
 .theme-dark .workspace-drawer {
-  background-color: var(--av-glass-tint);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  box-shadow: inset 0 1px 0 var(--av-glass-rim);
-  border-right: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  -webkit-backdrop-filter:
+    blur(var(--av-glass-frost))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast))
+    brightness(var(--av-glass-brightness));
+  backdrop-filter:
+    blur(var(--av-glass-frost))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast))
+    brightness(var(--av-glass-brightness));
+
+  border-style: solid;
+  border-width: var(--av-glass-rim-width);
+  border-image: linear-gradient(
+    135deg,
+    var(--av-glass-rim-lit) 0%,
+    var(--av-glass-rim-tint) 35%,
+    var(--av-glass-rim-shadow) 65%,
+    var(--av-glass-rim-lit) 100%
+  ) 1;
+  border-radius: var(--av-glass-radius);
+
+  box-shadow: inset 0 1px 0 var(--av-glass-rim-lit);
 }
 
-.theme-dark .workspace-split.mod-right-split {
-  border-right: none;
-  border-left: 1px solid var(--av-glass-hairline);
-}
-
-/* --- Tab strip + tabs --- */
+/* --- Tab strip + active tab --- */
 
 .theme-dark .workspace-tab-header-container,
 .theme-dark .workspace-tab-container {
-  background-color: var(--av-glass-tint);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  box-shadow: inset 0 -1px 0 var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  -webkit-backdrop-filter:
+    blur(var(--av-glass-frost))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast));
+  backdrop-filter:
+    blur(var(--av-glass-frost))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast));
+  border-radius: var(--av-glass-radius);
+  box-shadow: inset 0 -1px 0 var(--av-glass-rim-tint);
 }
 
 .theme-dark .workspace-tab-header.is-active {
-  background-color: var(--av-glass-tint-strong);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  border-radius: var(--av-glass-radius);
 }
 
-/* --- View headers (pane titles: Files, Search, Outline) --- */
+/* --- View headers --- */
 
 .theme-dark .view-header,
 .theme-dark .nav-header,
 .theme-dark .workspace-leaf-header {
   background-color: transparent;
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(calc(var(--av-glass-blur) * 0.6)) saturate(var(--av-glass-saturate));
-  border-bottom: 1px solid var(--av-glass-hairline);
+  -webkit-backdrop-filter:
+    blur(calc(var(--av-glass-frost) * 0.7))
+    saturate(var(--av-glass-saturate));
+  backdrop-filter:
+    blur(calc(var(--av-glass-frost) * 0.7))
+    saturate(var(--av-glass-saturate));
+  border-bottom: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
 }
 
-/* --- Status bar (bottom strip) --- */
+/* --- Status bar --- */
 
 .theme-dark .status-bar {
-  background-color: var(--av-glass-tint);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  border-top: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  -webkit-backdrop-filter:
+    blur(var(--av-glass-frost))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast));
+  backdrop-filter:
+    blur(var(--av-glass-frost))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast));
+  border-top: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
 }
 
-/* --- Ribbon (icon strip on left edge) --- */
+/* --- Ribbon --- */
 
 .theme-dark .workspace-ribbon,
 .theme-dark .side-dock-ribbon,
 .theme-dark .mobile-toolbar {
-  background-color: var(--av-glass-tint);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  border-right: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  -webkit-backdrop-filter:
+    blur(var(--av-glass-frost))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast));
+  backdrop-filter:
+    blur(var(--av-glass-frost))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast));
+  border-right: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
 }
 
-/* --- Dropdowns, menus, suggestion containers, popovers, tooltips --- */
+/* --- Dropdowns / menus / suggestion containers / popovers / tooltips --- */
 
 .theme-dark .suggestion-container,
 .theme-dark .menu,
@@ -136,12 +195,31 @@
 .theme-dark .tooltip,
 .theme-dark .HyperMD-popover,
 .theme-dark .dropdown {
-  background-color: var(--av-glass-tint-strong);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  border: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  -webkit-backdrop-filter:
+    blur(var(--av-glass-frost-strong))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast))
+    brightness(var(--av-glass-brightness));
+  backdrop-filter:
+    blur(var(--av-glass-frost-strong))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast))
+    brightness(var(--av-glass-brightness));
+
+  border-style: solid;
+  border-width: var(--av-glass-rim-width);
+  border-image: linear-gradient(
+    135deg,
+    var(--av-glass-rim-lit) 0%,
+    var(--av-glass-rim-tint) 50%,
+    var(--av-glass-rim-shadow) 100%
+  ) 1;
+  border-radius: var(--av-glass-radius);
+
   box-shadow:
-    inset 0 1px 0 var(--av-glass-rim),
+    inset 0 1px 0 var(--av-glass-rim-lit),
+    inset 0 -1px 0 var(--av-glass-rim-shadow),
     0 12px 32px rgba(0, 0, 0, 0.55);
 }
 
@@ -153,21 +231,40 @@
 }
 
 .theme-dark select.dropdown {
-  background-color: var(--av-glass-tint-strong);
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.5)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(calc(var(--av-glass-blur) * 0.5)) saturate(var(--av-glass-saturate));
-  border: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-frost) * 0.5)) saturate(var(--av-glass-saturate));
+  backdrop-filter:         blur(calc(var(--av-glass-frost) * 0.5)) saturate(var(--av-glass-saturate));
+  border: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
+  border-radius: var(--av-glass-radius);
 }
 
-/* --- Modals (Settings dialog, Open file, etc.) --- */
+/* --- Modals --- */
 
 .theme-dark .modal {
-  background-color: var(--av-glass-tint-strong);
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 1.4)) saturate(var(--av-glass-saturate));
-  backdrop-filter:         blur(calc(var(--av-glass-blur) * 1.4)) saturate(var(--av-glass-saturate));
-  border: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  -webkit-backdrop-filter:
+    blur(calc(var(--av-glass-frost-strong) * 1.2))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast));
+  backdrop-filter:
+    blur(calc(var(--av-glass-frost-strong) * 1.2))
+    saturate(var(--av-glass-saturate))
+    contrast(var(--av-glass-contrast));
+
+  border-style: solid;
+  border-width: var(--av-glass-rim-width);
+  border-image: linear-gradient(
+    135deg,
+    var(--av-glass-rim-lit) 0%,
+    var(--av-glass-rim-tint) 40%,
+    var(--av-glass-rim-shadow) 80%,
+    var(--av-glass-rim-lit) 100%
+  ) 1;
+  border-radius: var(--av-glass-radius);
+
   box-shadow:
-    inset 0 1px 0 var(--av-glass-rim),
+    inset 0 1px 0 var(--av-glass-rim-lit),
+    inset 0 -1px 0 var(--av-glass-rim-shadow),
     0 24px 64px rgba(0, 0, 0, 0.65);
 }
 
@@ -177,9 +274,8 @@
   backdrop-filter:         blur(4px);
 }
 
-/* --- Off switch (toggle removed via Style Settings) ---
-   Restore opaque chrome from the baseline partials so the
-   flatter v0.1 look is one tap away. */
+/* --- Off switch ---
+   Restore opaque baselines so the flatter v0.1 look returns. */
 
 .theme-dark:not(.ventures-glass) .workspace,
 .theme-dark:not(.ventures-glass) .workspace-split.mod-root,
@@ -198,6 +294,10 @@
   background-color: var(--background-primary-alt);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  border-image: none;
+  border-width: 0 1px 0 0;
+  border-color: var(--divider-color);
+  border-radius: 0;
   box-shadow: none;
 }
 
@@ -213,6 +313,7 @@
   background-color: var(--background-primary);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  border-radius: 0;
 }
 
 .theme-dark:not(.ventures-glass) .suggestion-container,
@@ -225,4 +326,7 @@
   background-color: var(--av-purple-deep);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  border-image: none;
+  border: 1px solid var(--av-purple-mid);
+  border-radius: var(--radius-m);
 }

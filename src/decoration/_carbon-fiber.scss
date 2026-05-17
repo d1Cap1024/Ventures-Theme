@@ -1,99 +1,221 @@
 /* ============================================
-   Carbon fiber — body background.
-   Pure CSS weave: two diagonal repeating-linear-
-   gradients cross-hatched at 45° / 135°, plus
-   a soft silver micro-noise pass for the
-   "shredded fiber" glint. Fixed-attached so it
-   reads as a tactile substrate, not a wallpaper
-   that scrolls with content.
+   Carbon fiber — body background, animated.
+   Three selectable weave types, each a different
+   gradient stack with its own slow drift animation.
+   The animation creates a "living material" feel
+   without any JS — pure background-position
+   translation at a near-imperceptible speed.
 
-   Visible everywhere the chrome above is glass.
-   Workspace shells (panes, empty states) are
-   made transparent in _glass.scss so the weave
-   reads through; only the writing surface
-   (markdown editor / preview) stays opaque.
+   Knobs:
+     ventures-carbon-strength    0..100  default 50
+        Multiplies the alpha of every weave strand.
+        0 = invisible, 100 = strong material.
+
+     ventures-carbon-weave       class-select
+        ventures-carbon-forged    (default, chopped strands)
+        ventures-carbon-twill     (classic 2/2 woven)
+        ventures-carbon-triaxial  (three-axis weave)
+
+   Reduced motion: animations disabled via the
+   prefers-reduced-motion media query.
+
+   Pure-CSS limitation: animation is a continuous
+   slow drift. Mouse-tracked deformation would
+   require JS — not possible in an Obsidian theme,
+   but doable as a companion plugin.
    ============================================ */
+
+/* --- Tunables --- */
+
+.theme-dark {
+  --ventures-carbon-strength: 50;             /* 0..100 fallback */
+  --av-carbon-mult: calc(var(--ventures-carbon-strength) / 100);
+}
+
+/* --- Base body bg (color always present) --- */
 
 .theme-dark body {
   background-color: var(--background-primary);
+  background-attachment: fixed;
+}
+
+/* ============================================
+   FORGED CARBON (default) — chopped/shredded
+   strands at irregular angles. Reads like the
+   real "forged composite" used in performance
+   parts: short fiber pieces randomly oriented,
+   compressed into a panel.
+   ============================================ */
+
+.theme-dark body,
+.theme-dark.ventures-carbon-forged body {
   background-image:
-    /* Long, faint silver streaks (the visible "strands") */
     repeating-linear-gradient(
-      45deg,
-      rgba(192, 192, 192, 0.12) 0 1px,
-      transparent 1px 7px,
-      rgba(122, 122, 140, 0.09) 7px 8px,
-      transparent 8px 14px
+      15deg,
+      rgba(192, 192, 192, calc(0.14 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 11px,
+      rgba(122, 122, 140, calc(0.09 * var(--av-carbon-mult))) 11px 12px,
+      transparent 12px 21px
     ),
-    /* Cross-weave: opposite diagonal, slightly offset cadence */
     repeating-linear-gradient(
-      135deg,
-      rgba(192, 192, 192, 0.11) 0 1px,
-      transparent 1px 6px,
-      rgba(74, 30, 122, 0.14) 6px 7px,
-      transparent 7px 13px
+      67deg,
+      rgba(192, 192, 192, calc(0.11 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 9px,
+      rgba(74, 30, 122, calc(0.18 * var(--av-carbon-mult))) 9px 10px,
+      transparent 10px 17px
     ),
-    /* Subtle violet wash so the weave doesn't read as pure grey */
+    repeating-linear-gradient(
+      113deg,
+      rgba(192, 192, 192, calc(0.12 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 13px,
+      rgba(122, 122, 140, calc(0.08 * var(--av-carbon-mult))) 13px 14px,
+      transparent 14px 23px
+    ),
+    repeating-linear-gradient(
+      159deg,
+      rgba(232, 201, 122, calc(0.04 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 17px
+    ),
     radial-gradient(
       ellipse at 50% 0%,
       rgba(45, 18, 72, 0.35) 0%,
       transparent 65%
     );
-  background-attachment: fixed;
-  background-size: 24px 24px, 24px 24px, 100% 100%;
+  background-size: 32px 32px, 28px 28px, 36px 36px, 40px 40px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0, 0 0, center top;
+  animation: forged-shift 60s linear infinite;
 }
 
-/* --- Intensity variants (driven by Style Settings class-select) --- */
+@keyframes forged-shift {
+  to {
+    background-position:
+      96px  64px,
+     -112px 72px,
+      80px -108px,
+     -120px -80px,
+      center top;
+  }
+}
 
-.theme-dark.ventures-carbon-subtle body {
+/* ============================================
+   TWILL WEAVE — classic 2/2 carbon fiber:
+   parallel diagonal strands in two opposing
+   directions creating the recognizable "X"
+   crosshatch with alternating high/low cells.
+   ============================================ */
+
+.theme-dark.ventures-carbon-twill body {
   background-image:
+    /* checker base — alternating high/low cells of the weave */
+    linear-gradient(
+      45deg,
+      rgba(74, 30, 122, calc(0.18 * var(--av-carbon-mult))) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(74, 30, 122, calc(0.18 * var(--av-carbon-mult))) 75%
+    ),
+    linear-gradient(
+      45deg,
+      rgba(13, 5, 21, calc(0.25 * var(--av-carbon-mult))) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(13, 5, 21, calc(0.25 * var(--av-carbon-mult))) 75%
+    ),
+    /* primary strands at 45 */
     repeating-linear-gradient(
       45deg,
-      rgba(192, 192, 192, 0.06) 0 1px,
-      transparent 1px 7px,
-      rgba(122, 122, 140, 0.04) 7px 8px,
-      transparent 8px 14px
+      rgba(192, 192, 192, calc(0.14 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 5px
     ),
+    /* secondary strands at -45 */
     repeating-linear-gradient(
-      135deg,
-      rgba(192, 192, 192, 0.05) 0 1px,
-      transparent 1px 6px,
-      rgba(74, 30, 122, 0.07) 6px 7px,
-      transparent 7px 13px
+      -45deg,
+      rgba(192, 192, 192, calc(0.12 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 5px
     ),
     radial-gradient(
       ellipse at 50% 0%,
-      rgba(45, 18, 72, 0.22) 0%,
+      rgba(45, 18, 72, 0.35) 0%,
       transparent 65%
     );
+  background-size: 16px 16px, 16px 16px, 6px 6px, 6px 6px, 100% 100%;
+  background-position: 0 0, 8px 8px, 0 0, 0 0, center top;
+  animation: twill-shift 90s linear infinite;
 }
 
-.theme-dark.ventures-carbon-bold body {
+@keyframes twill-shift {
+  to {
+    background-position:
+      32px 32px,
+      40px 40px,
+      24px 24px,
+     -24px 24px,
+      center top;
+  }
+}
+
+/* ============================================
+   TRIAXIAL WEAVE — three sets of strands at
+   60° intervals (0° / 60° / 120°). Used in
+   aerospace composites for high-strength
+   isotropic panels. Reads as a denser, more
+   technical-looking pattern than twill.
+   ============================================ */
+
+.theme-dark.ventures-carbon-triaxial body {
   background-image:
     repeating-linear-gradient(
-      45deg,
-      rgba(192, 192, 192, 0.20) 0 1px,
-      transparent 1px 7px,
-      rgba(122, 122, 140, 0.16) 7px 8px,
-      transparent 8px 14px
+      0deg,
+      rgba(192, 192, 192, calc(0.13 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 9px,
+      rgba(122, 122, 140, calc(0.07 * var(--av-carbon-mult))) 9px 10px,
+      transparent 10px 17px
     ),
     repeating-linear-gradient(
-      135deg,
-      rgba(192, 192, 192, 0.18) 0 1px,
-      transparent 1px 6px,
-      rgba(74, 30, 122, 0.22) 6px 7px,
-      transparent 7px 13px
+      60deg,
+      rgba(192, 192, 192, calc(0.13 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 9px,
+      rgba(74, 30, 122, calc(0.14 * var(--av-carbon-mult))) 9px 10px,
+      transparent 10px 17px
+    ),
+    repeating-linear-gradient(
+      120deg,
+      rgba(192, 192, 192, calc(0.13 * var(--av-carbon-mult))) 0 1px,
+      transparent 1px 9px,
+      rgba(122, 122, 140, calc(0.07 * var(--av-carbon-mult))) 9px 10px,
+      transparent 10px 17px
     ),
     radial-gradient(
       ellipse at 50% 0%,
-      rgba(45, 18, 72, 0.40) 0%,
-      transparent 60%
+      rgba(45, 18, 72, 0.35) 0%,
+      transparent 65%
     );
-  background-size: 22px 22px, 22px 22px, 100% 100%;
+  background-size: 18px 18px, 18px 18px, 18px 18px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0, center top;
+  animation: triaxial-shift 75s linear infinite;
 }
 
-/* --- Off switch (toggle removed via Style Settings) --- */
+@keyframes triaxial-shift {
+  to {
+    background-position:
+      0    72px,
+      62px -36px,
+     -62px -36px,
+      center top;
+  }
+}
+
+/* --- Reduced motion: respect OS setting --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-dark body {
+    animation: none !important;
+  }
+}
+
+/* --- Off switch (carbon-fiber toggle off) --- */
 
 .theme-dark:not(.ventures-carbon-fiber) body {
   background-image: none;
+  animation: none;
 }

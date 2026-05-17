@@ -1209,95 +1209,181 @@ body {
 }
 
 /* ============================================
-   Carbon fiber — body background.
-   Pure CSS weave: two diagonal repeating-linear-
-   gradients cross-hatched at 45° / 135°, plus
-   a soft silver micro-noise pass for the
-   "shredded fiber" glint. Fixed-attached so it
-   reads as a tactile substrate, not a wallpaper
-   that scrolls with content.
+   Carbon fiber — body background, animated.
+   Three selectable weave types, each a different
+   gradient stack with its own slow drift animation.
+   The animation creates a "living material" feel
+   without any JS — pure background-position
+   translation at a near-imperceptible speed.
 
-   Visible everywhere the chrome above is glass.
-   Workspace shells (panes, empty states) are
-   made transparent in _glass.scss so the weave
-   reads through; only the writing surface
-   (markdown editor / preview) stays opaque.
+   Knobs:
+     ventures-carbon-strength    0..100  default 50
+        Multiplies the alpha of every weave strand.
+        0 = invisible, 100 = strong material.
+
+     ventures-carbon-weave       class-select
+        ventures-carbon-forged    (default, chopped strands)
+        ventures-carbon-twill     (classic 2/2 woven)
+        ventures-carbon-triaxial  (three-axis weave)
+
+   Reduced motion: animations disabled via the
+   prefers-reduced-motion media query.
+
+   Pure-CSS limitation: animation is a continuous
+   slow drift. Mouse-tracked deformation would
+   require JS — not possible in an Obsidian theme,
+   but doable as a companion plugin.
    ============================================ */
+/* --- Tunables --- */
+.theme-dark {
+  --ventures-carbon-strength: 50; /* 0..100 fallback */
+  --av-carbon-mult: calc(var(--ventures-carbon-strength) / 100);
+}
+
+/* --- Base body bg (color always present) --- */
 .theme-dark body {
   background-color: var(--background-primary);
-  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.12) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.09) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.11) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.14) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.35) 0%, transparent 65%);
   background-attachment: fixed;
-  background-size: 24px 24px, 24px 24px, 100% 100%;
-}
-
-/* --- Intensity variants (driven by Style Settings class-select) --- */
-.theme-dark.ventures-carbon-subtle body {
-  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.06) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.04) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.05) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.07) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.22) 0%, transparent 65%);
-}
-
-.theme-dark.ventures-carbon-bold body {
-  background-image: repeating-linear-gradient(45deg, rgba(192, 192, 192, 0.2) 0 1px, transparent 1px 7px, rgba(122, 122, 140, 0.16) 7px 8px, transparent 8px 14px), repeating-linear-gradient(135deg, rgba(192, 192, 192, 0.18) 0 1px, transparent 1px 6px, rgba(74, 30, 122, 0.22) 6px 7px, transparent 7px 13px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.4) 0%, transparent 60%);
-  background-size: 22px 22px, 22px 22px, 100% 100%;
-}
-
-/* --- Off switch (toggle removed via Style Settings) --- */
-.theme-dark:not(.ventures-carbon-fiber) body {
-  background-image: none;
 }
 
 /* ============================================
-   Glass surfaces — true Apple-style clear glass.
-   Near-zero white tint + heavy backdrop blur,
-   not the dark purple wash from v0.2. Applied
-   to every chrome surface so the carbon fiber
-   body reads through everywhere except the
-   writing canvas.
-
-   What gets glass:
-     - sidebars (left / right / mobile drawer)
-     - tab strip + individual tabs
-     - view headers (pane titles)
-     - status bar
-     - ribbon (icon strip)
-     - empty panes
-     - dropdowns / menus / popovers / tooltips
-     - modal frames
-
-   What stays opaque (so reading isn't ruined):
-     - .markdown-source-view, .cm-editor
-     - .markdown-preview-view
-     - .markdown-embed (embedded notes)
-     - actual file content
-
-   Loaded AFTER workspace/_sidebar.scss and the
-   other workspace partials so the translucent
-   bg overrides their opaque baselines.
+   FORGED CARBON (default) — chopped/shredded
+   strands at irregular angles. Reads like the
+   real "forged composite" used in performance
+   parts: short fiber pieces randomly oriented,
+   compressed into a panel.
    ============================================ */
-/* --- Tunables ---
-   Two user-facing knobs (set by Style Settings sliders):
-     --ventures-glass-transparency  (0 = solid, 100 = invisible tint)
-     --ventures-glass-thickness     (CSS length: 0px..60px)
-   Fallback defaults are declared here so the theme works
-   without Style Settings installed.
-
-   Derived tokens compute the actual rgba alpha and the
-   backdrop blur from those two knobs. --tint is the surface
-   alpha; --tint-strong is +0.04 for popovers/menus so they
-   read slightly heavier than sidebars. */
-.theme-dark {
-  --ventures-glass-transparency: 95; /* fallback if Style Settings absent */
-  --ventures-glass-thickness: 28px; /* fallback if Style Settings absent */
-  --av-glass-alpha: calc((100 - var(--ventures-glass-transparency)) * 0.01);
-  --av-glass-alpha-strong: calc(var(--av-glass-alpha) + 0.04);
-  --av-glass-blur: var(--ventures-glass-thickness);
-  --av-glass-tint: rgba(255, 255, 255, var(--av-glass-alpha));
-  --av-glass-tint-strong: rgba(255, 255, 255, var(--av-glass-alpha-strong));
-  --av-glass-saturate: 180%;
-  --av-glass-rim: rgba(255, 255, 255, 0.07);
-  --av-glass-hairline: rgba(201, 168, 76, 0.14);
+.theme-dark body,
+.theme-dark.ventures-carbon-forged body {
+  background-image: repeating-linear-gradient(15deg, rgba(192, 192, 192, calc(0.14 * var(--av-carbon-mult))) 0 1px, transparent 1px 11px, rgba(122, 122, 140, calc(0.09 * var(--av-carbon-mult))) 11px 12px, transparent 12px 21px), repeating-linear-gradient(67deg, rgba(192, 192, 192, calc(0.11 * var(--av-carbon-mult))) 0 1px, transparent 1px 9px, rgba(74, 30, 122, calc(0.18 * var(--av-carbon-mult))) 9px 10px, transparent 10px 17px), repeating-linear-gradient(113deg, rgba(192, 192, 192, calc(0.12 * var(--av-carbon-mult))) 0 1px, transparent 1px 13px, rgba(122, 122, 140, calc(0.08 * var(--av-carbon-mult))) 13px 14px, transparent 14px 23px), repeating-linear-gradient(159deg, rgba(232, 201, 122, calc(0.04 * var(--av-carbon-mult))) 0 1px, transparent 1px 17px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.35) 0%, transparent 65%);
+  background-size: 32px 32px, 28px 28px, 36px 36px, 40px 40px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0, 0 0, center top;
+  animation: forged-shift 60s linear infinite;
 }
 
-/* --- Workspace shell: transparent so body carbon fiber shows --- */
+@keyframes forged-shift {
+  to {
+    background-position: 96px 64px, -112px 72px, 80px -108px, -120px -80px, center top;
+  }
+}
+/* ============================================
+   TWILL WEAVE — classic 2/2 carbon fiber:
+   parallel diagonal strands in two opposing
+   directions creating the recognizable "X"
+   crosshatch with alternating high/low cells.
+   ============================================ */
+.theme-dark.ventures-carbon-twill body {
+  background-image: linear-gradient(45deg, rgba(74, 30, 122, calc(0.18 * var(--av-carbon-mult))) 25%, transparent 25%, transparent 75%, rgba(74, 30, 122, calc(0.18 * var(--av-carbon-mult))) 75%), linear-gradient(45deg, rgba(13, 5, 21, calc(0.25 * var(--av-carbon-mult))) 25%, transparent 25%, transparent 75%, rgba(13, 5, 21, calc(0.25 * var(--av-carbon-mult))) 75%), repeating-linear-gradient(45deg, rgba(192, 192, 192, calc(0.14 * var(--av-carbon-mult))) 0 1px, transparent 1px 5px), repeating-linear-gradient(-45deg, rgba(192, 192, 192, calc(0.12 * var(--av-carbon-mult))) 0 1px, transparent 1px 5px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.35) 0%, transparent 65%);
+  background-size: 16px 16px, 16px 16px, 6px 6px, 6px 6px, 100% 100%;
+  background-position: 0 0, 8px 8px, 0 0, 0 0, center top;
+  animation: twill-shift 90s linear infinite;
+}
+
+@keyframes twill-shift {
+  to {
+    background-position: 32px 32px, 40px 40px, 24px 24px, -24px 24px, center top;
+  }
+}
+/* ============================================
+   TRIAXIAL WEAVE — three sets of strands at
+   60° intervals (0° / 60° / 120°). Used in
+   aerospace composites for high-strength
+   isotropic panels. Reads as a denser, more
+   technical-looking pattern than twill.
+   ============================================ */
+.theme-dark.ventures-carbon-triaxial body {
+  background-image: repeating-linear-gradient(0deg, rgba(192, 192, 192, calc(0.13 * var(--av-carbon-mult))) 0 1px, transparent 1px 9px, rgba(122, 122, 140, calc(0.07 * var(--av-carbon-mult))) 9px 10px, transparent 10px 17px), repeating-linear-gradient(60deg, rgba(192, 192, 192, calc(0.13 * var(--av-carbon-mult))) 0 1px, transparent 1px 9px, rgba(74, 30, 122, calc(0.14 * var(--av-carbon-mult))) 9px 10px, transparent 10px 17px), repeating-linear-gradient(120deg, rgba(192, 192, 192, calc(0.13 * var(--av-carbon-mult))) 0 1px, transparent 1px 9px, rgba(122, 122, 140, calc(0.07 * var(--av-carbon-mult))) 9px 10px, transparent 10px 17px), radial-gradient(ellipse at 50% 0%, rgba(45, 18, 72, 0.35) 0%, transparent 65%);
+  background-size: 18px 18px, 18px 18px, 18px 18px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0, center top;
+  animation: triaxial-shift 75s linear infinite;
+}
+
+@keyframes triaxial-shift {
+  to {
+    background-position: 0 72px, 62px -36px, -62px -36px, center top;
+  }
+}
+/* --- Reduced motion: respect OS setting --- */
+@media (prefers-reduced-motion: reduce) {
+  .theme-dark body {
+    animation: none !important;
+  }
+}
+/* --- Off switch (carbon-fiber toggle off) --- */
+.theme-dark:not(.ventures-carbon-fiber) body {
+  background-image: none;
+  animation: none;
+}
+
+/* ============================================
+   Glass surfaces — every chrome surface gets a
+   highly transparent, lightly frosted, slightly
+   magnified pane with a chromatic rim.
+
+   Five user-facing knobs (all Style Settings sliders):
+
+     ventures-glass-transparency  0..100  default 30
+        Drives surface alpha. Compressed range so the
+        whole slider stays in "subtly frosted at most"
+        territory — even at 0 the tint maxes at ~0.06.
+        100 = invisible polish.
+
+     ventures-glass-thickness     0..100  default 20
+        Drives ONLY perceptual density: saturate +
+        contrast + a tiny chromatic shift on the backdrop.
+        Deliberately subtle — the visible cue for "thick
+        glass" is the rim, not the magnification.
+
+     ventures-glass-frost         0..12   default 3
+        Backdrop blur radius in px. Independent of
+        thickness. At 0 you get a near-perfect polish
+        (rim still visible); cranked up it becomes
+        traditional frosted glass.
+
+     ventures-glass-border-width  0..6    default 1
+        Rim thickness. THIS is where edge distortion
+        reads — a chromatic gradient border that catches
+        the light and bends it.
+
+     ventures-glass-radius        0..32   default 4
+        Corner radius for every glass surface.
+
+   Loaded after every workspace partial so the
+   translucent bg wins over their opaque baselines.
+   ============================================ */
+/* --- Tunables: knob defaults + derived tokens --- */
+.theme-dark {
+  /* Slider fallbacks (used if Style Settings isn't installed) */
+  --ventures-glass-transparency: 30;
+  --ventures-glass-thickness: 20;
+  --ventures-glass-frost: 3;
+  --ventures-glass-border-width: 1;
+  --ventures-glass-radius: 4;
+  /* Derived: tint alpha. Compressed: max 0.06 — "subtly frosted at most".
+     Inverted so slider=0 → most tint, slider=100 → invisible. */
+  --av-glass-alpha: calc((100 - var(--ventures-glass-transparency)) * 0.0006);
+  --av-glass-alpha-strong: calc(var(--av-glass-alpha) + 0.02);
+  /* Frost: independent blur radius in px */
+  --av-glass-frost: calc(var(--ventures-glass-frost) * 1px);
+  --av-glass-frost-strong: calc(var(--av-glass-frost) * 1.4px);
+  /* Thickness → magnification trio. All percentages scale with the slider.
+     Deliberately gentle: saturate +0..+40%, contrast +0..+10%. */
+  --av-glass-saturate: calc(140% + var(--ventures-glass-thickness) * 0.4%);
+  --av-glass-contrast: calc(100% + var(--ventures-glass-thickness) * 0.1%);
+  --av-glass-brightness: calc(100% + var(--ventures-glass-thickness) * 0.04%);
+  /* Geometry */
+  --av-glass-rim-width: calc(var(--ventures-glass-border-width) * 1px);
+  --av-glass-radius: calc(var(--ventures-glass-radius) * 1px);
+  /* Static rim/highlight colors — used in gradient border + inset shadows */
+  --av-glass-rim-lit: rgba(255, 255, 255, 0.22);
+  --av-glass-rim-shadow: rgba(0, 0, 0, 0.18);
+  --av-glass-rim-tint: rgba(255, 255, 255, 0.06);
+}
+
+/* --- Mixin-ish shared values via CSS custom-property assignment ---
+   Each glass surface uses the same backdrop-filter recipe so the
+   thickness/frost knobs propagate uniformly. */
+/* --- Workspace shell: transparent so the carbon weave shows --- */
 .theme-dark .workspace,
 .theme-dark .workspace-split.mod-root,
 .theme-dark .workspace-tabs,
@@ -1313,71 +1399,74 @@ body {
 .theme-dark .workspace-split.mod-right-split,
 .theme-dark .workspace-sidedock-vault-profile,
 .theme-dark .workspace-drawer {
-  background-color: var(--av-glass-tint);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  box-shadow: inset 0 1px 0 var(--av-glass-rim);
-  border-right: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  -webkit-backdrop-filter: blur(var(--av-glass-frost)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast)) brightness(var(--av-glass-brightness));
+  backdrop-filter: blur(var(--av-glass-frost)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast)) brightness(var(--av-glass-brightness));
+  border-style: solid;
+  border-width: var(--av-glass-rim-width);
+  border-image: linear-gradient(135deg, var(--av-glass-rim-lit) 0%, var(--av-glass-rim-tint) 35%, var(--av-glass-rim-shadow) 65%, var(--av-glass-rim-lit) 100%) 1;
+  border-radius: var(--av-glass-radius);
+  box-shadow: inset 0 1px 0 var(--av-glass-rim-lit);
 }
 
-.theme-dark .workspace-split.mod-right-split {
-  border-right: none;
-  border-left: 1px solid var(--av-glass-hairline);
-}
-
-/* --- Tab strip + tabs --- */
+/* --- Tab strip + active tab --- */
 .theme-dark .workspace-tab-header-container,
 .theme-dark .workspace-tab-container {
-  background-color: var(--av-glass-tint);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  box-shadow: inset 0 -1px 0 var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  -webkit-backdrop-filter: blur(var(--av-glass-frost)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast));
+  backdrop-filter: blur(var(--av-glass-frost)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast));
+  border-radius: var(--av-glass-radius);
+  box-shadow: inset 0 -1px 0 var(--av-glass-rim-tint);
 }
 
 .theme-dark .workspace-tab-header.is-active {
-  background-color: var(--av-glass-tint-strong);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  border-radius: var(--av-glass-radius);
 }
 
-/* --- View headers (pane titles: Files, Search, Outline) --- */
+/* --- View headers --- */
 .theme-dark .view-header,
 .theme-dark .nav-header,
 .theme-dark .workspace-leaf-header {
   background-color: transparent;
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(var(--av-glass-saturate));
-  backdrop-filter: blur(calc(var(--av-glass-blur) * 0.6)) saturate(var(--av-glass-saturate));
-  border-bottom: 1px solid var(--av-glass-hairline);
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-frost) * 0.7)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(calc(var(--av-glass-frost) * 0.7)) saturate(var(--av-glass-saturate));
+  border-bottom: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
 }
 
-/* --- Status bar (bottom strip) --- */
+/* --- Status bar --- */
 .theme-dark .status-bar {
-  background-color: var(--av-glass-tint);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  border-top: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  -webkit-backdrop-filter: blur(var(--av-glass-frost)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast));
+  backdrop-filter: blur(var(--av-glass-frost)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast));
+  border-top: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
 }
 
-/* --- Ribbon (icon strip on left edge) --- */
+/* --- Ribbon --- */
 .theme-dark .workspace-ribbon,
 .theme-dark .side-dock-ribbon,
 .theme-dark .mobile-toolbar {
-  background-color: var(--av-glass-tint);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  border-right: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha));
+  -webkit-backdrop-filter: blur(var(--av-glass-frost)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast));
+  backdrop-filter: blur(var(--av-glass-frost)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast));
+  border-right: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
 }
 
-/* --- Dropdowns, menus, suggestion containers, popovers, tooltips --- */
+/* --- Dropdowns / menus / suggestion containers / popovers / tooltips --- */
 .theme-dark .suggestion-container,
 .theme-dark .menu,
 .theme-dark .popover,
 .theme-dark .tooltip,
 .theme-dark .HyperMD-popover,
 .theme-dark .dropdown {
-  background-color: var(--av-glass-tint-strong);
-  -webkit-backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  backdrop-filter: blur(var(--av-glass-blur)) saturate(var(--av-glass-saturate));
-  border: 1px solid var(--av-glass-hairline);
-  box-shadow: inset 0 1px 0 var(--av-glass-rim), 0 12px 32px rgba(0, 0, 0, 0.55);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  -webkit-backdrop-filter: blur(var(--av-glass-frost-strong)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast)) brightness(var(--av-glass-brightness));
+  backdrop-filter: blur(var(--av-glass-frost-strong)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast)) brightness(var(--av-glass-brightness));
+  border-style: solid;
+  border-width: var(--av-glass-rim-width);
+  border-image: linear-gradient(135deg, var(--av-glass-rim-lit) 0%, var(--av-glass-rim-tint) 50%, var(--av-glass-rim-shadow) 100%) 1;
+  border-radius: var(--av-glass-radius);
+  box-shadow: inset 0 1px 0 var(--av-glass-rim-lit), inset 0 -1px 0 var(--av-glass-rim-shadow), 0 12px 32px rgba(0, 0, 0, 0.55);
 }
 
 .theme-dark .suggestion-item.is-selected,
@@ -1388,19 +1477,23 @@ body {
 }
 
 .theme-dark select.dropdown {
-  background-color: var(--av-glass-tint-strong);
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 0.5)) saturate(var(--av-glass-saturate));
-  backdrop-filter: blur(calc(var(--av-glass-blur) * 0.5)) saturate(var(--av-glass-saturate));
-  border: 1px solid var(--av-glass-hairline);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-frost) * 0.5)) saturate(var(--av-glass-saturate));
+  backdrop-filter: blur(calc(var(--av-glass-frost) * 0.5)) saturate(var(--av-glass-saturate));
+  border: var(--av-glass-rim-width) solid var(--av-glass-rim-tint);
+  border-radius: var(--av-glass-radius);
 }
 
-/* --- Modals (Settings dialog, Open file, etc.) --- */
+/* --- Modals --- */
 .theme-dark .modal {
-  background-color: var(--av-glass-tint-strong);
-  -webkit-backdrop-filter: blur(calc(var(--av-glass-blur) * 1.4)) saturate(var(--av-glass-saturate));
-  backdrop-filter: blur(calc(var(--av-glass-blur) * 1.4)) saturate(var(--av-glass-saturate));
-  border: 1px solid var(--av-glass-hairline);
-  box-shadow: inset 0 1px 0 var(--av-glass-rim), 0 24px 64px rgba(0, 0, 0, 0.65);
+  background-color: rgba(255, 255, 255, var(--av-glass-alpha-strong));
+  -webkit-backdrop-filter: blur(calc(var(--av-glass-frost-strong) * 1.2)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast));
+  backdrop-filter: blur(calc(var(--av-glass-frost-strong) * 1.2)) saturate(var(--av-glass-saturate)) contrast(var(--av-glass-contrast));
+  border-style: solid;
+  border-width: var(--av-glass-rim-width);
+  border-image: linear-gradient(135deg, var(--av-glass-rim-lit) 0%, var(--av-glass-rim-tint) 40%, var(--av-glass-rim-shadow) 80%, var(--av-glass-rim-lit) 100%) 1;
+  border-radius: var(--av-glass-radius);
+  box-shadow: inset 0 1px 0 var(--av-glass-rim-lit), inset 0 -1px 0 var(--av-glass-rim-shadow), 0 24px 64px rgba(0, 0, 0, 0.65);
 }
 
 .theme-dark .modal-bg {
@@ -1409,9 +1502,8 @@ body {
   backdrop-filter: blur(4px);
 }
 
-/* --- Off switch (toggle removed via Style Settings) ---
-   Restore opaque chrome from the baseline partials so the
-   flatter v0.1 look is one tap away. */
+/* --- Off switch ---
+   Restore opaque baselines so the flatter v0.1 look returns. */
 .theme-dark:not(.ventures-glass) .workspace,
 .theme-dark:not(.ventures-glass) .workspace-split.mod-root,
 .theme-dark:not(.ventures-glass) .workspace-tabs,
@@ -1429,6 +1521,10 @@ body {
   background-color: var(--background-primary-alt);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  border-image: none;
+  border-width: 0 1px 0 0;
+  border-color: var(--divider-color);
+  border-radius: 0;
   box-shadow: none;
 }
 
@@ -1444,6 +1540,7 @@ body {
   background-color: var(--background-primary);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  border-radius: 0;
 }
 
 .theme-dark:not(.ventures-glass) .suggestion-container,
@@ -1456,6 +1553,9 @@ body {
   background-color: var(--av-purple-deep);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  border-image: none;
+  border: 1px solid var(--av-purple-mid);
+  border-radius: var(--radius-m);
 }
 
 /* ============================================
@@ -1529,51 +1629,86 @@ settings:
   -
     id: ventures-carbon-fiber
     title: Carbon fiber background
-    description: Subtle woven carbon-fiber texture behind translucent surfaces.
+    description: Animated woven carbon-fiber texture on the body. Continuous slow drift gives a "living material" feel.
     type: class-toggle
     default: true
   -
-    id: ventures-carbon-intensity
-    title: Carbon fiber intensity
-    description: How visible the weave reads through translucent chrome.
+    id: ventures-carbon-weave
+    title: Carbon weave type
+    description: Different weave constructions, each with its own drift character.
     type: class-select
-    default: ventures-carbon-default
+    default: ventures-carbon-forged
     allowEmpty: false
     options:
       -
-        label: Subtle
-        value: ventures-carbon-subtle
+        label: Forged (chopped, default)
+        value: ventures-carbon-forged
       -
-        label: Default
-        value: ventures-carbon-default
+        label: Twill weave (2/2 classic)
+        value: ventures-carbon-twill
       -
-        label: Bold
-        value: ventures-carbon-bold
+        label: Triaxial weave (aerospace)
+        value: ventures-carbon-triaxial
+  -
+    id: ventures-carbon-strength
+    title: Carbon strength
+    description: How prominent the strands read. 0 = invisible, 100 = strong material.
+    type: variable-number-slider
+    default: 50
+    min: 0
+    max: 100
+    step: 1
   -
     id: ventures-glass
     title: Glass surfaces
-    description: Apple-style translucent backdrop-blur on sidebars, dropdowns, menus, suggestion lists, and popovers.
+    description: Translucent backdrop-blur on sidebars, tabs, status bar, ribbon, dropdowns, menus, popovers, and modals.
     type: class-toggle
     default: true
   -
     id: ventures-glass-transparency
     title: Glass transparency
-    description: How see-through the glass is. 0 = solid tint, 100 = invisible tint (pure blur).
+    description: Tint alpha. The whole range stays in "subtly frosted at most" territory — even 0 is just shy of polish.
     type: variable-number-slider
-    default: 95
+    default: 30
     min: 0
     max: 100
     step: 1
   -
     id: ventures-glass-thickness
     title: Glass thickness
-    description: How much the glass distorts content behind it. Higher = more frosted-lens magnification (heavier blur).
+    description: Magnification cue — saturate + contrast on what's behind the pane. Deliberately subtle; the rim does the heavy lifting.
     type: variable-number-slider
-    default: 28
+    default: 20
     min: 0
-    max: 60
+    max: 100
     step: 1
-    format: px
+  -
+    id: ventures-glass-frost
+    title: Glass frost
+    description: Backdrop blur radius. 0 = near-perfect polish, 12 = traditional frosted glass.
+    type: variable-number-slider
+    default: 3
+    min: 0
+    max: 12
+    step: 1
+  -
+    id: ventures-glass-border-width
+    title: Glass border width
+    description: Rim thickness — where the edge distortion reads. Wider = more refractive lensing effect.
+    type: variable-number-slider
+    default: 1
+    min: 0
+    max: 6
+    step: 1
+  -
+    id: ventures-glass-radius
+    title: Glass corner radius
+    description: Corner rounding for every glass surface.
+    type: variable-number-slider
+    default: 4
+    min: 0
+    max: 32
+    step: 1
 */
 /* --- Accent intensity variants --- */
 .theme-dark.ventures-accent-subtle {
